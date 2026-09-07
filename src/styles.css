@@ -1,39 +1,22 @@
-* {
-  box-sizing: border-box;
-}
-
 :root {
-  font-family:
-    Inter,
-    ui-sans-serif,
-    system-ui,
-    -apple-system,
-    BlinkMacSystemFont,
-    "Segoe UI",
+  font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
     sans-serif;
-
-  color: #f8fafc;
-  background: #080b12;
+  color: #f4f4f5;
+  background: #080b14;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
 }
 
-html,
-body,
-#root {
-  min-height: 100%;
-  margin: 0;
+* {
+  box-sizing: border-box;
 }
 
 body {
+  margin: 0;
   min-width: 320px;
+  min-height: 100vh;
   background:
-    radial-gradient(
-      circle at 50% -10%,
-      #1d2740 0%,
-      #0d1220 35%,
-      #080b12 70%
-    );
+    radial-gradient(circle at top, #1b2135 0%, #0d1120 42%, #080b14 100%);
 }
 
 button {
@@ -41,617 +24,464 @@ button {
 }
 
 .app {
+  width: 100%;
   min-height: 100vh;
-  display: flex;
-  flex-direction: column;
 }
 
-/* ------------------------------
+/* =========================
    TOP BAR
------------------------------- */
+   ========================= */
 
 .topbar {
-  width: 100%;
-  max-width: 1180px;
+  width: min(1100px, calc(100% - 32px));
   margin: 0 auto;
-  padding: 24px 28px;
+  padding: 36px 0 28px;
 
   display: flex;
   align-items: center;
   justify-content: space-between;
 
-  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 }
 
-.brand {
-  display: flex;
-  align-items: center;
-  gap: 13px;
-}
-
-.brand-icon {
-  width: 46px;
-  height: 46px;
-
-  display: grid;
-  place-items: center;
-
-  border-radius: 13px;
-
-  background: linear-gradient(
-    145deg,
-    #263653,
-    #121827
-  );
-
-  border: 1px solid rgba(255, 255, 255, 0.1);
-
-  font-size: 22px;
-
-  box-shadow:
-    0 8px 25px rgba(0, 0, 0, 0.3);
-}
-
-.brand h1 {
+.topbar h1 {
   margin: 0;
-
-  font-size: 20px;
-  letter-spacing: -0.03em;
+  font-size: 2rem;
+  font-weight: 800;
+  letter-spacing: -0.04em;
 }
 
-.brand span {
-  display: block;
-  margin-top: 2px;
-
-  color: #7f8ba3;
-
-  font-size: 12px;
+.topbar p {
+  margin: 8px 0 0;
+  color: #8f96aa;
+  font-size: 0.95rem;
 }
+
+/* =========================
+   WALLET
+   ========================= */
 
 .wallet {
   display: flex;
   align-items: center;
   gap: 7px;
 
-  padding: 10px 15px;
+  padding: 10px 16px;
 
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 999px;
 
-  background: rgba(255, 255, 255, 0.035);
+  background: rgba(255, 255, 255, 0.04);
 
-  color: #f8fafc;
+  color: #f6c453;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
 }
 
-.wallet-icon {
-  font-size: 16px;
+.wallet span:first-child {
+  font-size: 1rem;
 }
 
 .wallet strong {
-  font-size: 15px;
+  color: #ffffff;
+  font-size: 0.95rem;
 }
 
-.wallet > span:last-child {
-  color: #7f8ba3;
-  font-size: 13px;
+.wallet span:last-child {
+  color: #9da3b5;
+  font-size: 0.85rem;
 }
 
-/* ------------------------------
+/* =========================
    MAIN
------------------------------- */
+   ========================= */
 
-.main-content {
-  width: 100%;
-  max-width: 1180px;
-
+main {
+  width: min(1100px, calc(100% - 32px));
   margin: 0 auto;
-  padding: 52px 28px 70px;
-
-  flex: 1;
+  padding: 30px 0 60px;
 }
 
-/* ------------------------------
-   HERO
------------------------------- */
+/* =========================
+   CHARACTER / XP
+   ========================= */
 
-.hero {
+.character-card {
   display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
+  align-items: stretch;
+  gap: 28px;
 
-  gap: 40px;
+  padding: 26px;
 
-  margin-bottom: 34px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 18px;
+
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.055),
+    rgba(255, 255, 255, 0.025)
+  );
+
+  box-shadow:
+    0 20px 50px rgba(0, 0, 0, 0.25),
+    inset 0 1px 0 rgba(255, 255, 255, 0.03);
 }
 
-.eyebrow {
-  margin: 0 0 10px;
-
-  color: #78859d;
-
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.15em;
-}
-
-.hero h2 {
-  margin: 0;
-
-  font-size: clamp(38px, 5vw, 62px);
-  line-height: 0.98;
-  letter-spacing: -0.055em;
-
-  font-weight: 750;
-}
-
-.hero-text {
-  margin: 18px 0 0;
-
-  color: #8894aa;
-
-  font-size: 15px;
-}
-
-.hero-level {
+.character-info {
   min-width: 120px;
 
   display: flex;
   flex-direction: column;
-  align-items: flex-end;
+  justify-content: center;
+  align-items: center;
 
-  padding-bottom: 3px;
+  padding: 12px 24px;
+
+  border-right: 1px solid rgba(255, 255, 255, 0.08);
 }
 
-.hero-level span {
-  color: #707c92;
-
-  font-size: 10px;
+.level-label {
+  color: #8f96aa;
+  font-size: 0.75rem;
   font-weight: 700;
-  letter-spacing: 0.15em;
+  letter-spacing: 0.16em;
 }
 
-.hero-level strong {
-  font-size: 52px;
+.level-number {
+  margin-top: 4px;
+
+  font-size: 3.5rem;
   line-height: 1;
+  font-weight: 900;
 
-  letter-spacing: -0.06em;
+  background: linear-gradient(180deg, #ffffff, #aeb6cc);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
 }
 
-/* ------------------------------
-   XP CARD
------------------------------- */
-
-.progress-card {
-  margin-bottom: 58px;
-  padding: 25px;
-
-  border: 1px solid rgba(255, 255, 255, 0.075);
-  border-radius: 18px;
-
-  background:
-    linear-gradient(
-      145deg,
-      rgba(255, 255, 255, 0.055),
-      rgba(255, 255, 255, 0.018)
-    );
-
-  box-shadow:
-    0 18px 45px rgba(0, 0, 0, 0.2);
-}
-
-.progress-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-end;
-
-  gap: 20px;
-
-  margin-bottom: 18px;
-}
-
-.card-label {
-  color: #758198;
-
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 0.15em;
-}
-
-.xp-value {
-  margin-top: 5px;
-
-  font-size: 27px;
-  font-weight: 750;
-
-  letter-spacing: -0.04em;
-}
-
-.xp-value small {
-  color: #7d899f;
-
-  font-size: 12px;
-  font-weight: 600;
-}
-
-.next-level {
+.xp-info {
+  flex: 1;
   display: flex;
   flex-direction: column;
-  align-items: flex-end;
-
-  gap: 4px;
-
-  color: #77849a;
-
-  font-size: 11px;
+  justify-content: center;
 }
 
-.next-level strong {
-  color: #c7cfdd;
+.xp-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 
-  font-size: 12px;
+  margin-bottom: 10px;
+
+  color: #aab1c3;
+  font-size: 0.85rem;
+  font-weight: 700;
 }
 
-.progress-track {
-  height: 9px;
+.xp-header span:first-child {
+  color: #ffffff;
+  letter-spacing: 0.08em;
+}
+
+.xp-bar {
+  width: 100%;
+  height: 14px;
 
   overflow: hidden;
 
+  border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 999px;
 
-  background: #171e2c;
+  background: #070a12;
+  box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.45);
 }
 
-.progress-fill {
+.xp-fill {
   height: 100%;
+  min-width: 0;
 
   border-radius: inherit;
 
-  background:
-    linear-gradient(
-      90deg,
-      #617cff,
-      #8c72ff
-    );
+  background: linear-gradient(90deg, #7657ff, #a778ff);
 
-  box-shadow:
-    0 0 18px rgba(112, 113, 255, 0.35);
+  box-shadow: 0 0 18px rgba(132, 91, 255, 0.45);
 
-  transition: width 400ms ease;
+  transition: width 0.35s ease;
 }
 
-.progress-footer {
-  display: flex;
-  justify-content: space-between;
+.xp-info p {
+  margin: 9px 0 0;
 
-  margin-top: 9px;
-
-  color: #68758c;
-
-  font-size: 10px;
+  color: #777f95;
+  font-size: 0.8rem;
 }
 
-/* ------------------------------
-   SECTION
------------------------------- */
+/* =========================
+   SECTIONS
+   ========================= */
 
 .section {
-  margin-bottom: 42px;
+  margin-top: 36px;
 }
 
 .section-heading {
   display: flex;
+  align-items: center;
   justify-content: space-between;
-  align-items: flex-end;
 
-  margin-bottom: 18px;
+  margin-bottom: 14px;
 }
 
-.section-heading .eyebrow {
-  margin-bottom: 5px;
-}
-
-.section-heading h3 {
+.section-heading h2 {
   margin: 0;
 
-  font-size: 25px;
-  letter-spacing: -0.035em;
+  font-size: 1.35rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
 }
 
-.quest-count {
-  color: #78859c;
-
-  font-size: 12px;
+.section-heading span {
+  color: #70788e;
+  font-size: 0.8rem;
 }
 
-/* ------------------------------
+/* =========================
    QUEST LIST
------------------------------- */
+   ========================= */
 
 .quest-list {
-  display: grid;
+  display: flex;
+  flex-direction: column;
   gap: 10px;
 }
+
+/* =========================
+   QUEST CARD
+   ========================= */
 
 .quest-card {
   display: flex;
   align-items: center;
+  justify-content: space-between;
+  gap: 20px;
 
-  gap: 16px;
+  padding: 18px 20px;
 
-  padding: 15px;
-
-  border: 1px solid rgba(255, 255, 255, 0.065);
-  border-radius: 15px;
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 14px;
 
   background: rgba(255, 255, 255, 0.025);
 
   transition:
-    transform 180ms ease,
-    background 180ms ease,
-    border-color 180ms ease;
+    transform 0.2s ease,
+    border-color 0.2s ease,
+    background 0.2s ease;
 }
 
 .quest-card:hover {
   transform: translateY(-1px);
 
-  background: rgba(255, 255, 255, 0.04);
+  border-color: rgba(167, 120, 255, 0.3);
 
-  border-color: rgba(255, 255, 255, 0.11);
+  background: rgba(255, 255, 255, 0.045);
 }
 
 .quest-card.completed {
-  opacity: 0.6;
+  opacity: 0.55;
 }
 
-.quest-icon {
-  width: 46px;
-  height: 46px;
-
-  flex-shrink: 0;
-
-  display: grid;
-  place-items: center;
-
-  border-radius: 12px;
-
-  background: rgba(255, 255, 255, 0.055);
-
-  font-size: 21px;
-}
-
-.quest-info {
-  flex: 1;
-
+.quest-content {
   min-width: 0;
 }
 
-.quest-info h4 {
-  margin: 0 0 7px;
+.quest-content h3 {
+  margin: 0;
 
-  font-size: 15px;
-  font-weight: 650;
+  font-size: 1rem;
+  font-weight: 700;
 }
 
 .quest-rewards {
   display: flex;
-  gap: 12px;
+  gap: 16px;
 
-  color: #78859c;
+  margin-top: 8px;
 
-  font-size: 11px;
+  color: #8f96aa;
+  font-size: 0.75rem;
 }
 
-.complete-button {
-  padding: 9px 14px;
+.quest-rewards span:first-child {
+  color: #a9a0ff;
+}
 
+.quest-rewards span:last-child {
+  color: #d2a84e;
+}
+
+/* =========================
+   QUEST BUTTON
+   ========================= */
+
+.quest-card button {
   flex-shrink: 0;
 
-  border: 1px solid rgba(255, 255, 255, 0.09);
+  padding: 9px 16px;
+
+  border: 1px solid rgba(167, 120, 255, 0.35);
   border-radius: 9px;
 
-  background: rgba(255, 255, 255, 0.055);
+  background: rgba(118, 87, 255, 0.12);
 
-  color: #dbe2ed;
+  color: #d7ceff;
 
-  font-size: 11px;
-  font-weight: 650;
+  font-size: 0.8rem;
+  font-weight: 700;
 
   cursor: pointer;
 
   transition:
-    background 150ms ease,
-    transform 150ms ease;
+    background 0.2s ease,
+    border-color 0.2s ease,
+    transform 0.2s ease;
 }
 
-.complete-button:hover:not(:disabled) {
-  background: rgba(255, 255, 255, 0.1);
-
+.quest-card button:hover:not(:disabled) {
+  background: rgba(118, 87, 255, 0.25);
+  border-color: rgba(167, 120, 255, 0.6);
   transform: translateY(-1px);
 }
 
-.complete-button:disabled {
+.quest-card button:disabled {
   cursor: default;
 
-  color: #6f7a8d;
+  border-color: rgba(255, 255, 255, 0.06);
+  background: rgba(255, 255, 255, 0.04);
+
+  color: #70778a;
 }
 
-/* ------------------------------
-   FEATURE CARDS
------------------------------- */
+/* =========================
+   COMING SOON
+   ========================= */
 
-.feature-grid {
+.coming-soon {
   display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
 
-  grid-template-columns:
-    repeat(3, 1fr);
-
-  gap: 12px;
+  margin-top: 40px;
 }
 
-.feature-card {
-  position: relative;
+.coming-soon > div {
+  padding: 22px;
 
-  min-height: 135px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 14px;
 
-  padding: 19px;
-
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-
-  border: 1px solid rgba(255, 255, 255, 0.055);
-  border-radius: 15px;
-
-  background: rgba(255, 255, 255, 0.018);
+  background: rgba(255, 255, 255, 0.02);
 }
 
-.feature-card > span {
-  font-size: 21px;
-}
-
-.feature-card strong {
-  display: block;
-
-  margin-bottom: 4px;
-
-  font-size: 14px;
-}
-
-.feature-card p {
+.coming-soon h2 {
   margin: 0;
 
-  color: #707d92;
-
-  font-size: 11px;
-  line-height: 1.45;
+  font-size: 1rem;
+  font-weight: 750;
 }
 
-.feature-card small {
-  position: absolute;
+.coming-soon p {
+  margin: 7px 0 0;
 
-  top: 18px;
-  right: 17px;
-
-  color: #58657a;
-
-  font-size: 8px;
-  font-weight: 700;
-
-  letter-spacing: 0.1em;
+  color: #666e83;
+  font-size: 0.8rem;
 }
 
-/* ------------------------------
-   FOOTER
------------------------------- */
-
-footer {
-  width: 100%;
-  max-width: 1180px;
-
-  margin: 0 auto;
-  padding: 20px 28px 25px;
-
-  display: flex;
-  justify-content: space-between;
-
-  color: #4f5a6e;
-
-  font-size: 10px;
-
-  border-top: 1px solid rgba(255, 255, 255, 0.045);
-}
-
-/* ------------------------------
+/* =========================
    RESPONSIVE
------------------------------- */
+   ========================= */
 
-@media (max-width: 760px) {
+@media (max-width: 700px) {
   .topbar {
-    padding: 18px 18px;
+    padding-top: 24px;
   }
 
-  .main-content {
-    padding: 38px 18px 55px;
+  .topbar h1 {
+    font-size: 1.6rem;
   }
 
-  .hero {
-    align-items: flex-start;
+  main {
+    padding-top: 20px;
   }
 
-  .hero-level {
-    min-width: auto;
-  }
-
-  .hero-level strong {
-    font-size: 40px;
-  }
-
-  .feature-grid {
-    grid-template-columns: 1fr;
-  }
-}
-
-@media (max-width: 520px) {
-  .brand span {
-    display: none;
-  }
-
-  .wallet {
-    padding: 8px 11px;
-  }
-
-  .hero {
-    display: block;
-  }
-
-  .hero-level {
-    display: block;
-
-    margin-top: 25px;
-  }
-
-  .hero-level strong {
-    display: inline-block;
-
-    margin-left: 7px;
-
-    font-size: 25px;
-  }
-
-  .progress-card {
+  .character-card {
+    gap: 18px;
     padding: 18px;
   }
 
-  .progress-header {
-    align-items: flex-start;
+  .character-info {
+    min-width: 85px;
+    padding: 8px 14px;
   }
 
-  .next-level {
-    text-align: right;
+  .level-number {
+    font-size: 2.7rem;
   }
 
   .quest-card {
     align-items: flex-start;
   }
 
-  .quest-icon {
-    width: 40px;
-    height: 40px;
-
-    font-size: 18px;
+  .quest-card button {
+    margin-top: 2px;
   }
 
-  .complete-button {
-    padding: 8px 10px;
+  .coming-soon {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  .topbar {
+    align-items: flex-start;
+    gap: 16px;
+  }
+
+  .wallet {
+    padding: 8px 12px;
+  }
+
+  .character-card {
+    flex-direction: column;
+  }
+
+  .character-info {
+    min-width: 0;
+
+    flex-direction: row;
+    justify-content: flex-start;
+    gap: 12px;
+
+    padding: 0 0 16px;
+
+    border-right: 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  }
+
+  .level-number {
+    margin-top: 0;
+    font-size: 2rem;
+  }
+
+  .quest-card {
+    padding: 16px;
+  }
+
+  .quest-card button {
+    padding: 8px 12px;
   }
 
   .quest-rewards {
     flex-direction: column;
-    gap: 3px;
-  }
-
-  footer {
-    padding-left: 18px;
-    padding-right: 18px;
+    gap: 4px;
   }
 }
