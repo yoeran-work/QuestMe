@@ -1,152 +1,123 @@
-import { useState } from 'react'
+import { useState } from "react";
+import { getXpProgress } from "./utils/leveling";
 
 const starterQuests = [
   {
     id: 1,
-    title: '2 liter water drinken',
-    icon: '💧',
+    title: "2 liter water drinken",
     xp: 50,
-    y: 25,
+    y: 25
   },
   {
     id: 2,
-    title: 'Mijn stappen halen',
-    icon: '🚶',
+    title: "Mijn stappen halen",
     xp: 75,
-    y: 30,
+    y: 30
   },
   {
     id: 3,
-    title: 'Haargroeispray gebruiken',
-    icon: '💇',
+    title: "Haargroeispray gebruiken",
     xp: 15,
-    y: 5,
+    y: 5
   },
   {
     id: 4,
-    title: 'Naar de sportschool',
-    icon: '🏋️',
+    title: "Naar de sportschool",
     xp: 150,
-    y: 100,
+    y: 100
   },
   {
     id: 5,
-    title: 'Kamer opruimen',
-    icon: '🧹',
+    title: "Kamer opruimen",
     xp: 300,
-    y: 250,
-  },
-]
+    y: 250
+  }
+];
 
 function App() {
-  const [xp, setXp] = useState(12450)
-  const [yBucks, setYBucks] = useState(1275)
-  const [completedQuests, setCompletedQuests] = useState([])
+  const [xp, setXp] = useState(0);
+  const [yBucks, setYBucks] = useState(0);
+  const [completedQuests, setCompletedQuests] = useState([]);
 
-  const level = Math.floor(xp / 1000) + 1
-  const currentLevelXp = xp % 1000
-  const xpToNextLevel = 1000
-  const progress = (currentLevelXp / xpToNextLevel) * 100
+  const progress = getXpProgress(xp);
 
-  const completeQuest = (quest) => {
+  function completeQuest(quest) {
     if (completedQuests.includes(quest.id)) {
-      return
+      return;
     }
 
-    setXp((currentXp) => currentXp + quest.xp)
-    setYBucks((currentY) => currentY + quest.y)
-    setCompletedQuests((current) => [...current, quest.id])
+    setXp((currentXp) => currentXp + quest.xp);
+    setYBucks((currentY) => currentY + quest.y);
+    setCompletedQuests((current) => [...current, quest.id]);
   }
 
   return (
     <div className="app">
       <header className="topbar">
-        <div className="brand">
-          <div className="brand-icon">⚔️</div>
-          <div>
-            <h1>QuestMe</h1>
-            <span>Real life. RPG rules.</span>
-          </div>
+        <div>
+          <h1>⚔️ QuestMe</h1>
+          <p>Turn real life into an RPG.</p>
         </div>
 
         <div className="wallet">
-          <span className="wallet-icon">🪙</span>
-          <strong>{yBucks.toLocaleString('nl-NL')}</strong>
+          <span>🪙</span>
+          <strong>{yBucks}</strong>
           <span>Y</span>
         </div>
       </header>
 
-      <main className="main-content">
-        <section className="hero">
-          <div>
-            <p className="eyebrow">WELCOME BACK, HERO</p>
-            <h2>Time to complete<br />some quests.</h2>
-            <p className="hero-text">
-              Kleine keuzes. Grote progressie.
-            </p>
+      <main>
+        <section className="character-card">
+          <div className="character-info">
+            <span className="level-label">LEVEL</span>
+            <span className="level-number">{progress.level}</span>
           </div>
 
-          <div className="hero-level">
-            <span>LEVEL</span>
-            <strong>{level}</strong>
-          </div>
-        </section>
-
-        <section className="progress-card">
-          <div className="progress-header">
-            <div>
-              <span className="card-label">CHARACTER XP</span>
-              <div className="xp-value">
-                {xp.toLocaleString('nl-NL')} <small>XP</small>
-              </div>
+          <div className="xp-info">
+            <div className="xp-header">
+              <span>XP</span>
+              <span>
+                {xp.toLocaleString()}{" "}
+                {progress.nextLevelXp !== null &&
+                  `/ ${progress.nextLevelXp.toLocaleString()}`}
+              </span>
             </div>
 
-            <div className="next-level">
-              <span>Next level</span>
-              <strong>{1000 - currentLevelXp} XP</strong>
+            <div className="xp-bar">
+              <div
+                className="xp-fill"
+                style={{ width: `${progress.percentage}%` }}
+              />
             </div>
-          </div>
 
-          <div className="progress-track">
-            <div
-              className="progress-fill"
-              style={{ width: `${progress}%` }}
-            />
-          </div>
-
-          <div className="progress-footer">
-            <span>Level {level}</span>
-            <span>Level {level + 1}</span>
+            {progress.nextLevelXp !== null && (
+              <p>
+                {(
+                  progress.nextLevelXp - xp
+                ).toLocaleString()} XP until level {progress.level + 1}
+              </p>
+            )}
           </div>
         </section>
 
         <section className="section">
           <div className="section-heading">
-            <div>
-              <p className="eyebrow">TODAY</p>
-              <h3>Daily Quests</h3>
-            </div>
-
-            <span className="quest-count">
-              {completedQuests.length}/{starterQuests.length}
-            </span>
+            <h2>⚔️ Quests</h2>
+            <span>{completedQuests.length} completed</span>
           </div>
 
           <div className="quest-list">
             {starterQuests.map((quest) => {
-              const completed = completedQuests.includes(quest.id)
+              const completed = completedQuests.includes(quest.id);
 
               return (
-                <article
-                  className={`quest-card ${completed ? 'completed' : ''}`}
+                <div
+                  className={`quest-card ${completed ? "completed" : ""}`}
                   key={quest.id}
                 >
-                  <div className="quest-icon">
-                    {quest.icon}
-                  </div>
+                  <div className="quest-content">
+                    <h3>{quest.title}</h3>
 
-                  <div className="quest-info">
-                    <h4>{quest.title}</h4>
                     <div className="quest-rewards">
                       <span>⭐ +{quest.xp} XP</span>
                       <span>🪙 +{quest.y} Y</span>
@@ -154,54 +125,36 @@ function App() {
                   </div>
 
                   <button
-                    className="complete-button"
                     onClick={() => completeQuest(quest)}
                     disabled={completed}
                   >
-                    {completed ? '✓ Done' : 'Complete'}
+                    {completed ? "✓ Done" : "Complete"}
                   </button>
-                </article>
-              )
+                </div>
+              );
             })}
           </div>
         </section>
 
-        <section className="feature-grid">
-          <div className="feature-card">
-            <span>🏪</span>
-            <div>
-              <strong>Store</strong>
-              <p>Spend your Y-bucks on rewards.</p>
-            </div>
-            <small>COMING SOON</small>
+        <section className="coming-soon">
+          <div>
+            <h2>🛒 Store</h2>
+            <p>Coming soon...</p>
           </div>
 
-          <div className="feature-card">
-            <span>🎒</span>
-            <div>
-              <strong>Inventory</strong>
-              <p>Your purchased rewards.</p>
-            </div>
-            <small>COMING SOON</small>
+          <div>
+            <h2>🎒 Inventory</h2>
+            <p>Coming soon...</p>
           </div>
 
-          <div className="feature-card">
-            <span>📊</span>
-            <div>
-              <strong>Statistics</strong>
-              <p>See how your character grows.</p>
-            </div>
-            <small>COMING SOON</small>
+          <div>
+            <h2>📊 Statistics</h2>
+            <p>Coming soon...</p>
           </div>
         </section>
       </main>
-
-      <footer>
-        <span>QuestMe</span>
-        <span>Build 0.1.0</span>
-      </footer>
     </div>
-  )
+  );
 }
 
-export default App
+export default App;
