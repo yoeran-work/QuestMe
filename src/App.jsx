@@ -3,6 +3,7 @@ import { getXpProgress } from "./utils/leveling";
 import starterQuests from "./data/starterQuests";
 import QuestList from "./components/QuestList";
 import CharacterCard from "./components/CharacterCard";
+import Wallet from "./components/Wallet";
 
 function App() {
   const [xp, setXp] = useState(0);
@@ -29,11 +30,7 @@ function App() {
           <p>Turn real life into an RPG.</p>
         </div>
 
-        <div className="wallet">
-          <span>🪙</span>
-          <strong>{yBucks}</strong>
-          <span>Y</span>
-        </div>
+        <Wallet yBucks={yBucks} />
       </header>
 
       <main>
