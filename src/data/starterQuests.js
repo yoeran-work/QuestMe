@@ -1,0 +1,34 @@
+const starterQuests = [
+  {
+    id: 1,
+    title: "2 liter water drinken",
+    xp: 50,
+    y: 25
+  },
+  {
+    id: 2,
+    title: "Mijn stappen halen",
+    xp: 75,
+    y: 30
+  },
+  {
+    id: 3,
+    title: "Haargroeispray gebruiken",
+    xp: 15,
+    y: 5
+  },
+  {
+    id: 4,
+    title: "Naar de sportschool",
+    xp: 150,
+    y: 100
+  },
+  {
+    id: 5,
+    title: "Kamer opruimen",
+    xp: 300,
+    y: 250
+  }
+];
+
+export default starterQuests;
