@@ -1,38 +1,6 @@
 import { useState } from "react";
 import { getXpProgress } from "./utils/leveling";
-
-const starterQuests = [
-  {
-    id: 1,
-    title: "2 liter water drinken",
-    xp: 50,
-    y: 25
-  },
-  {
-    id: 2,
-    title: "Mijn stappen halen",
-    xp: 75,
-    y: 30
-  },
-  {
-    id: 3,
-    title: "Haargroeispray gebruiken",
-    xp: 15,
-    y: 5
-  },
-  {
-    id: 4,
-    title: "Naar de sportschool",
-    xp: 150,
-    y: 100
-  },
-  {
-    id: 5,
-    title: "Kamer opruimen",
-    xp: 300,
-    y: 250
-  }
-];
+import starterQuests from "./data/starterQuests";
 
 function App() {
   const [xp, setXp] = useState(0);
@@ -92,9 +60,8 @@ function App() {
 
             {progress.nextLevelXp !== null && (
               <p>
-                {(
-                  progress.nextLevelXp - xp
-                ).toLocaleString()} XP until level {progress.level + 1}
+                {(progress.nextLevelXp - xp).toLocaleString()} XP until level{" "}
+                {progress.level + 1}
               </p>
             )}
           </div>
