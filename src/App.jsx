@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { getXpProgress } from "./utils/leveling";
 import starterQuests from "./data/starterQuests";
-import QuestCard from "./components/QuestCard";
+import QuestList from "./components/QuestList";
 
 function App() {
   const [xp, setXp] = useState(0);
@@ -74,16 +74,11 @@ function App() {
             <span>{completedQuests.length} completed</span>
           </div>
 
-          <div className="quest-list">
-            {starterQuests.map((quest) => (
-              <QuestCard
-                key={quest.id}
-                quest={quest}
-                completed={completedQuests.includes(quest.id)}
-                onComplete={completeQuest}
-              />
-            ))}
-          </div>
+          <QuestList
+            quests={starterQuests}
+            completedQuests={completedQuests}
+            onComplete={completeQuest}
+          />
         </section>
 
         <section className="coming-soon">
