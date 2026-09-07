@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { getXpProgress } from "./utils/leveling";
 import starterQuests from "./data/starterQuests";
+import QuestCard from "./components/QuestCard";
 
 function App() {
   const [xp, setXp] = useState(0);
@@ -74,32 +75,14 @@ function App() {
           </div>
 
           <div className="quest-list">
-            {starterQuests.map((quest) => {
-              const completed = completedQuests.includes(quest.id);
-
-              return (
-                <div
-                  className={`quest-card ${completed ? "completed" : ""}`}
-                  key={quest.id}
-                >
-                  <div className="quest-content">
-                    <h3>{quest.title}</h3>
-
-                    <div className="quest-rewards">
-                      <span>⭐ +{quest.xp} XP</span>
-                      <span>🪙 +{quest.y} Y</span>
-                    </div>
-                  </div>
-
-                  <button
-                    onClick={() => completeQuest(quest)}
-                    disabled={completed}
-                  >
-                    {completed ? "✓ Done" : "Complete"}
-                  </button>
-                </div>
-              );
-            })}
+            {starterQuests.map((quest) => (
+              <QuestCard
+                key={quest.id}
+                quest={quest}
+                completed={completedQuests.includes(quest.id)}
+                onComplete={completeQuest}
+              />
+            ))}
           </div>
         </section>
 
