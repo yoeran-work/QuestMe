@@ -1,6 +1,12 @@
 import QuestCard from "./QuestCard";
 
-function QuestList({ quests, completedQuests, onComplete }) {
+function QuestList({
+  quests,
+  completedQuests,
+  onComplete,
+  onEdit,
+  onDelete
+}) {
   return (
     <div className="quest-list">
       {quests.map((quest) => (
@@ -9,6 +15,8 @@ function QuestList({ quests, completedQuests, onComplete }) {
           quest={quest}
           completed={completedQuests.includes(quest.id)}
           onComplete={onComplete}
+          onEdit={onEdit}
+          onDelete={onDelete}
         />
       ))}
     </div>
