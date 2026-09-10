@@ -1,4 +1,10 @@
-function QuestCard({ quest, completed, onComplete }) {
+function QuestCard({
+  quest,
+  completed,
+  onComplete,
+  onEdit,
+  onDelete
+}) {
   return (
     <div className={`quest-card ${completed ? "completed" : ""}`}>
       <div className="quest-content">
@@ -10,12 +16,38 @@ function QuestCard({ quest, completed, onComplete }) {
         </div>
       </div>
 
-      <button
-        onClick={() => onComplete(quest)}
-        disabled={completed}
-      >
-        {completed ? "✓ Done" : "Complete"}
-      </button>
+      <div className="quest-actions">
+        {onEdit && (
+          <button
+            type="button"
+            className="quest-action-button"
+            onClick={() => onEdit(quest)}
+            title="Quest bewerken"
+          >
+            ✏️
+          </button>
+        )}
+
+        {onDelete && (
+          <button
+            type="button"
+            className="quest-action-button delete"
+            onClick={() => onDelete(quest)}
+            title="Quest verwijderen"
+          >
+            🗑️
+          </button>
+        )}
+
+        <button
+          type="button"
+          className="complete-button"
+          onClick={() => onComplete(quest)}
+          disabled={completed}
+        >
+          {completed ? "✓ Done" : "Complete"}
+        </button>
+      </div>
     </div>
   );
 }
