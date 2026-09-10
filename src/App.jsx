@@ -6,6 +6,7 @@ import {
 } from "./utils/storage";
 import starterQuests from "./data/starterQuests";
 import QuestList from "./components/QuestList";
+import QuestForm from "./components/QuestForm";
 import CharacterCard from "./components/CharacterCard";
 import Wallet from "./components/Wallet";
 
@@ -23,7 +24,6 @@ function App() {
   const [appData, setAppData] = useState(() => {
     const savedData = loadAppData();
 
-    // Geef een nieuwe installatie de starter quests.
     if (savedData.quests.length === 0) {
       return {
         ...savedData,
@@ -81,6 +81,16 @@ function App() {
     }));
   }
 
+  function addQuest(newQuest) {
+    setAppData((currentData) => ({
+      ...currentData,
+      quests: [
+        ...currentData.quests,
+        newQuest
+      ]
+    }));
+  }
+
   return (
     <div className="app">
       <header className="topbar">
@@ -106,6 +116,8 @@ function App() {
               {completedTodayIds.length}/{quests.length} completed
             </span>
           </div>
+
+          <QuestForm onAddQuest={addQuest} />
 
           <QuestList
             quests={quests}
