@@ -1,25 +1,84 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { getXpProgress } from "./utils/leveling";
+import {
+  loadAppData,
+  saveAppData
+} from "./utils/storage";
 import starterQuests from "./data/starterQuests";
 import QuestList from "./components/QuestList";
 import CharacterCard from "./components/CharacterCard";
 import Wallet from "./components/Wallet";
 
+function getTodayKey() {
+  const today = new Date();
+
+  const year = today.getFullYear();
+  const month = String(today.getMonth() + 1).padStart(2, "0");
+  const day = String(today.getDate()).padStart(2, "0");
+
+  return `${year}-${month}-${day}`;
+}
+
 function App() {
-  const [xp, setXp] = useState(0);
-  const [yBucks, setYBucks] = useState(0);
-  const [completedQuests, setCompletedQuests] = useState([]);
+  const [appData, setAppData] = useState(() => {
+    const savedData = loadAppData();
+
+    // Geef een nieuwe installatie de starter quests.
+    if (savedData.quests.length === 0) {
+      return {
+        ...savedData,
+        quests: starterQuests
+      };
+    }
+
+    return savedData;
+  });
+
+  const { profile, quests, questCompletions } = appData;
+
+  const xp = profile.totalXp;
+  const yBucks = profile.yBucks;
 
   const progress = getXpProgress(xp);
 
+  const today = getTodayKey();
+
+  const completedTodayIds = questCompletions
+    .filter((completion) => completion.completedDate === today)
+    .map((completion) => completion.questId);
+
+  useEffect(() => {
+    saveAppData(appData);
+  }, [appData]);
+
   function completeQuest(quest) {
-    if (completedQuests.includes(quest.id)) {
+    if (completedTodayIds.includes(quest.id)) {
       return;
     }
 
-    setXp((currentXp) => currentXp + quest.xp);
-    setYBucks((currentY) => currentY + quest.y);
-    setCompletedQuests((current) => [...current, quest.id]);
+    const completion = {
+      id: crypto.randomUUID(),
+      questId: quest.id,
+      completedAt: new Date().toISOString(),
+      completedDate: today,
+      xpEarned: quest.xp,
+      yEarned: quest.y
+    };
+
+    setAppData((currentData) => ({
+      ...currentData,
+
+      profile: {
+        ...currentData.profile,
+        totalXp: currentData.profile.totalXp + quest.xp,
+        yBucks: currentData.profile.yBucks + quest.y
+      },
+
+      questCompletions: [
+        ...currentData.questCompletions,
+        completion
+      ]
+    }));
   }
 
   return (
@@ -42,12 +101,15 @@ function App() {
         <section className="section">
           <div className="section-heading">
             <h2>⚔️ Quests</h2>
-            <span>{completedQuests.length} completed</span>
+
+            <span>
+              {completedTodayIds.length}/{quests.length} completed
+            </span>
           </div>
 
           <QuestList
-            quests={starterQuests}
-            completedQuests={completedQuests}
+            quests={quests}
+            completedQuests={completedTodayIds}
             onComplete={completeQuest}
           />
         </section>
