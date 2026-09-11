@@ -19,6 +19,11 @@ import {
 } from "./utils/cloudStorage";
 
 import {
+  areSavesEquivalent,
+  hasMeaningfulLocalProgress
+} from "./utils/syncConflict";
+
+import {
   getCompletionPeriodKey,
   isQuestCompleted,
   normalizeQuestType
@@ -51,6 +56,9 @@ import CharacterSetup
 
 import CloudStatus
   from "./components/CloudStatus";
+
+import CloudConflictDialog
+  from "./components/CloudConflictDialog";
 
 import "./quest-management.css";
 
@@ -92,6 +100,16 @@ function App() {
   const [
     cloudInitialized,
     setCloudInitialized
+  ] = useState(false);
+
+  const [
+    pendingCloudData,
+    setPendingCloudData
+  ] = useState(null);
+
+  const [
+    resolvingConflict,
+    setResolvingConflict
   ] = useState(false);
 
   const cloudSaveTimer =
@@ -146,7 +164,9 @@ function App() {
   useEffect(() => {
     if (!user) {
       setCloudInitialized(false);
+      setPendingCloudData(null);
       setCloudState("idle");
+
       return;
     }
 
@@ -154,6 +174,8 @@ function App() {
 
     async function initializeCloud() {
       try {
+        setCloudInitialized(false);
+        setPendingCloudData(null);
         setCloudState("checking");
 
         const cloudData =
@@ -190,24 +212,57 @@ function App() {
           return;
         }
 
-        setCloudState(
-          "downloading"
-        );
+        if (
+          areSavesEquivalent(
+            appData,
+            cloudData
+          )
+        ) {
+          setCloudInitialized(
+            true
+          );
 
-        setAppData(
+          setCloudState(
+            "synced"
+          );
+
+          return;
+        }
+
+        if (
+          !hasMeaningfulLocalProgress(
+            appData
+          )
+        ) {
+          setCloudState(
+            "downloading"
+          );
+
+          setAppData(
+            cloudData
+          );
+
+          setEditingQuest(
+            null
+          );
+
+          setCloudInitialized(
+            true
+          );
+
+          setCloudState(
+            "synced"
+          );
+
+          return;
+        }
+
+        setPendingCloudData(
           cloudData
         );
 
-        setEditingQuest(
-          null
-        );
-
-        setCloudInitialized(
-          true
-        );
-
         setCloudState(
-          "synced"
+          "conflict"
         );
       } catch (error) {
         console.error(
@@ -233,7 +288,8 @@ function App() {
   useEffect(() => {
     if (
       !user ||
-      !cloudInitialized
+      !cloudInitialized ||
+      pendingCloudData
     ) {
       return;
     }
@@ -288,8 +344,100 @@ function App() {
   }, [
     appData,
     user,
-    cloudInitialized
+    cloudInitialized,
+    pendingCloudData
   ]);
+
+  async function useCloudSave() {
+    if (
+      !pendingCloudData
+    ) {
+      return;
+    }
+
+    setResolvingConflict(
+      true
+    );
+
+    try {
+      setCloudState(
+        "downloading"
+      );
+
+      setAppData(
+        pendingCloudData
+      );
+
+      setEditingQuest(
+        null
+      );
+
+      setPendingCloudData(
+        null
+      );
+
+      setCloudInitialized(
+        true
+      );
+
+      setCloudState(
+        "synced"
+      );
+    } finally {
+      setResolvingConflict(
+        false
+      );
+    }
+  }
+
+  async function keepLocalSave() {
+    if (
+      !user ||
+      !pendingCloudData
+    ) {
+      return;
+    }
+
+    setResolvingConflict(
+      true
+    );
+
+    try {
+      setCloudState(
+        "uploading"
+      );
+
+      await saveCloudData(
+        user.uid,
+        appData
+      );
+
+      setPendingCloudData(
+        null
+      );
+
+      setCloudInitialized(
+        true
+      );
+
+      setCloudState(
+        "synced"
+      );
+    } catch (error) {
+      console.error(
+        "QuestMe: failed to replace cloud save.",
+        error
+      );
+
+      setCloudState(
+        "error"
+      );
+    } finally {
+      setResolvingConflict(
+        false
+      );
+    }
+  }
 
   function saveCharacterName(
     name
@@ -499,13 +647,34 @@ function App() {
 
   return (
     <div className="app">
-      {!characterName && (
-        <CharacterSetup
-          currentName={
-            characterName
+      {!characterName &&
+        !pendingCloudData && (
+          <CharacterSetup
+            currentName={
+              characterName
+            }
+            onSave={
+              saveCharacterName
+            }
+          />
+        )}
+
+      {pendingCloudData && (
+        <CloudConflictDialog
+          localData={
+            appData
           }
-          onSave={
-            saveCharacterName
+          cloudData={
+            pendingCloudData
+          }
+          resolving={
+            resolvingConflict
+          }
+          onUseCloud={
+            useCloudSave
+          }
+          onKeepLocal={
+            keepLocalSave
           }
         />
       )}
@@ -517,8 +686,7 @@ function App() {
           </h1>
 
           <p>
-            Turn real life
-            into an RPG.
+            Turn real life into an RPG.
           </p>
         </div>
 
@@ -581,16 +749,9 @@ function App() {
             </h2>
 
             <span>
-              {
-                completedQuestIds
-                  .length
-              }
-              /
-              {
-                quests.length
-              }{" "}
-              available period
-              completed
+              {completedQuestIds.length}/
+              {quests.length}{" "}
+              available period completed
             </span>
           </div>
 
