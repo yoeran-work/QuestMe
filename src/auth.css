@@ -217,3 +217,63 @@
     padding: 0 10px;
   }
 }
+
+/* =========================================
+   CLOUD STATUS
+   ========================================= */
+
+.cloud-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+
+  min-height: 30px;
+
+  padding: 0 9px;
+
+  border:
+    1px solid rgba(255, 255, 255, 0.07);
+
+  border-radius: 999px;
+
+  background:
+    rgba(255, 255, 255, 0.025);
+
+  color: #7d8599;
+
+  font-size: 0.62rem;
+  font-weight: 700;
+}
+
+.cloud-status-synced {
+  border-color:
+    rgba(87, 196, 135, 0.16);
+
+  background:
+    rgba(87, 196, 135, 0.045);
+
+  color: #89c9a4;
+}
+
+.cloud-status-saving,
+.cloud-status-checking,
+.cloud-status-uploading,
+.cloud-status-downloading {
+  color: #aaa0d7;
+}
+
+.cloud-status-error {
+  border-color:
+    rgba(220, 70, 90, 0.2);
+
+  background:
+    rgba(220, 70, 90, 0.05);
+
+  color: #dc8292;
+}
+
+@media (max-width: 600px) {
+  .cloud-status {
+    display: none;
+  }
+}
