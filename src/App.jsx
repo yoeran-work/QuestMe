@@ -54,6 +54,9 @@ import AuthPanel
 import CharacterSetup
   from "./components/CharacterSetup";
 
+import CharacterSheet
+  from "./components/CharacterSheet";
+
 import CloudStatus
   from "./components/CloudStatus";
 
@@ -91,6 +94,11 @@ function App() {
     editingQuest,
     setEditingQuest
   ] = useState(null);
+
+  const [
+    characterSheetOpen,
+    setCharacterSheetOpen
+  ] = useState(false);
 
   const [
     cloudState,
@@ -454,6 +462,14 @@ function App() {
     );
   }
 
+  async function handleSignOut() {
+    setCharacterSheetOpen(
+      false
+    );
+
+    await signOutUser();
+  }
+
   function completeQuest(
     quest
   ) {
@@ -679,6 +695,47 @@ function App() {
         />
       )}
 
+      <CharacterSheet
+        open={
+          characterSheetOpen
+        }
+        onClose={() =>
+          setCharacterSheetOpen(
+            false
+          )
+        }
+        characterName={
+          characterName
+        }
+        progress={
+          progress
+        }
+        xp={
+          xp
+        }
+        yBucks={
+          yBucks
+        }
+        quests={
+          quests
+        }
+        questCompletions={
+          questCompletions
+        }
+        user={
+          user
+        }
+        cloudState={
+          cloudState
+        }
+        onRename={
+          saveCharacterName
+        }
+        onSignOut={
+          handleSignOut
+        }
+      />
+
       <header className="topbar">
         <div>
           <h1>
@@ -722,8 +779,10 @@ function App() {
             onSignIn={
               signInWithGoogle
             }
-            onSignOut={
-              signOutUser
+            onOpenCharacter={() =>
+              setCharacterSheetOpen(
+                true
+              )
             }
           />
         </div>
