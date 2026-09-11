@@ -11,6 +11,7 @@ function CloudStatus({
     checking: "Checking cloud...",
     uploading: "Uploading local save...",
     downloading: "Loading cloud save...",
+    conflict: "Choose save",
     synced: "Cloud synced",
     saving: "Saving...",
     error: "Cloud error"
@@ -21,6 +22,7 @@ function CloudStatus({
     checking: "🔎",
     uploading: "⬆️",
     downloading: "⬇️",
+    conflict: "⚠️",
     synced: "☁️",
     saving: "☁️",
     error: "⚠️"
