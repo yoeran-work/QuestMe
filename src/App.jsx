@@ -13,12 +13,15 @@ import {
   normalizeQuestType
 } from "./utils/questSchedule";
 
+import { useAuth } from "./hooks/useAuth";
+
 import starterQuests from "./data/starterQuests";
 
 import QuestList from "./components/QuestList";
 import QuestForm from "./components/QuestForm";
 import CharacterCard from "./components/CharacterCard";
 import Wallet from "./components/Wallet";
+import AuthPanel from "./components/AuthPanel";
 
 import "./quest-management.css";
 
@@ -44,6 +47,14 @@ function App() {
 
   const [editingQuest, setEditingQuest] =
     useState(null);
+
+  const {
+    user,
+    authLoading,
+    authError,
+    signInWithGoogle,
+    signOutUser
+  } = useAuth();
 
   const {
     profile,
@@ -76,11 +87,12 @@ function App() {
     const completedAt = new Date();
 
     setAppData((currentData) => {
-      const alreadyCompleted = isQuestCompleted(
-        quest,
-        currentData.questCompletions,
-        completedAt
-      );
+      const alreadyCompleted =
+        isQuestCompleted(
+          quest,
+          currentData.questCompletions,
+          completedAt
+        );
 
       if (alreadyCompleted) {
         return currentData;
@@ -210,7 +222,17 @@ function App() {
           <p>Turn real life into an RPG.</p>
         </div>
 
-        <Wallet yBucks={yBucks} />
+        <div className="topbar-actions">
+          <Wallet yBucks={yBucks} />
+
+          <AuthPanel
+            user={user}
+            authLoading={authLoading}
+            authError={authError}
+            onSignIn={signInWithGoogle}
+            onSignOut={signOutUser}
+          />
+        </div>
       </header>
 
       <main>
