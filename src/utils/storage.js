@@ -1,9 +1,13 @@
 const STORAGE_KEY = "questme-data";
-const STORAGE_VERSION = 1;
+const STORAGE_VERSION = 2;
 
 export function createInitialData() {
   return {
     version: STORAGE_VERSION,
+
+    meta: {
+      starterQuestsSeeded: false
+    },
 
     profile: {
       totalXp: 0,
@@ -20,6 +24,72 @@ export function createInitialData() {
 
     consumedRewards: []
   };
+}
+
+function normalizeData(data) {
+  const initialData = createInitialData();
+
+  return {
+    ...initialData,
+    ...data,
+
+    version: STORAGE_VERSION,
+
+    meta: {
+      ...initialData.meta,
+      ...(data.meta || {})
+    },
+
+    profile: {
+      ...initialData.profile,
+      ...(data.profile || {})
+    },
+
+    quests: Array.isArray(data.quests)
+      ? data.quests
+      : [],
+
+    questCompletions: Array.isArray(data.questCompletions)
+      ? data.questCompletions
+      : [],
+
+    rewards: Array.isArray(data.rewards)
+      ? data.rewards
+      : [],
+
+    purchases: Array.isArray(data.purchases)
+      ? data.purchases
+      : [],
+
+    consumedRewards: Array.isArray(data.consumedRewards)
+      ? data.consumedRewards
+      : []
+  };
+}
+
+function migrateData(oldData) {
+  if (
+    oldData.version === 1 ||
+    oldData.version === undefined
+  ) {
+    return normalizeData({
+      ...oldData,
+
+      meta: {
+        ...(oldData.meta || {}),
+
+        starterQuestsSeeded:
+          Array.isArray(oldData.quests) &&
+          oldData.quests.length > 0
+      }
+    });
+  }
+
+  console.warn(
+    "QuestMe: unknown save version. Starting with fresh data."
+  );
+
+  return createInitialData();
 }
 
 export function loadAppData() {
@@ -40,31 +110,12 @@ export function loadAppData() {
       return migrateData(parsedData);
     }
 
-    return {
-      ...createInitialData(),
-      ...parsedData,
-      profile: {
-        ...createInitialData().profile,
-        ...(parsedData.profile || {})
-      },
-      quests: Array.isArray(parsedData.quests)
-        ? parsedData.quests
-        : [],
-      questCompletions: Array.isArray(parsedData.questCompletions)
-        ? parsedData.questCompletions
-        : [],
-      rewards: Array.isArray(parsedData.rewards)
-        ? parsedData.rewards
-        : [],
-      purchases: Array.isArray(parsedData.purchases)
-        ? parsedData.purchases
-        : [],
-      consumedRewards: Array.isArray(parsedData.consumedRewards)
-        ? parsedData.consumedRewards
-        : []
-    };
+    return normalizeData(parsedData);
   } catch (error) {
-    console.error("QuestMe: failed to load saved data.", error);
+    console.error(
+      "QuestMe: failed to load saved data.",
+      error
+    );
 
     return createInitialData();
   }
@@ -80,7 +131,10 @@ export function saveAppData(data) {
       })
     );
   } catch (error) {
-    console.error("QuestMe: failed to save data.", error);
+    console.error(
+      "QuestMe: failed to save data.",
+      error
+    );
   }
 }
 
@@ -88,14 +142,9 @@ export function clearAppData() {
   try {
     localStorage.removeItem(STORAGE_KEY);
   } catch (error) {
-    console.error("QuestMe: failed to clear saved data.", error);
+    console.error(
+      "QuestMe: failed to clear saved data.",
+      error
+    );
   }
-}
-
-function migrateData(oldData) {
-  console.warn(
-    "QuestMe: saved data uses an older version. Returning a fresh data structure."
-  );
-
-  return createInitialData();
 }
