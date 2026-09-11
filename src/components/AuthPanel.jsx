@@ -6,25 +6,38 @@ function AuthPanel({
   authLoading,
   authError,
   onSignIn,
-  onSignOut
+  onOpenCharacter
 }) {
+  const fallbackLetter =
+    characterName
+      ?.charAt(0)
+      ?.toUpperCase() || "?";
+
+  function handleOpenCharacter() {
+    if (typeof onOpenCharacter === "function") {
+      onOpenCharacter();
+    }
+  }
+
   if (user) {
     return (
       <div className="auth-panel">
-        <div className="auth-status cloud">
+        <button
+          type="button"
+          className="auth-status cloud"
+          onClick={handleOpenCharacter}
+        >
           <span className="auth-mode-icon">
             ☁️
           </span>
 
           <span className="auth-mode-text">
-            Synced
+            Account
           </span>
 
           <div className="auth-user">
             <div className="auth-avatar-fallback">
-              {characterName
-                ?.charAt(0)
-                ?.toUpperCase() || "?"}
+              {fallbackLetter}
             </div>
 
             <div className="auth-user-info">
@@ -34,19 +47,11 @@ function AuthPanel({
               </span>
 
               <span className="auth-user-email">
-                Google connected
+                Cloud connected
               </span>
             </div>
           </div>
-
-          <button
-            type="button"
-            className="auth-button sign-out"
-            onClick={onSignOut}
-          >
-            Sign out
-          </button>
-        </div>
+        </button>
 
         {authError && (
           <div className="auth-error">
@@ -59,7 +64,11 @@ function AuthPanel({
 
   return (
     <div className="auth-panel">
-      <div className="auth-status">
+      <button
+        type="button"
+        className="auth-status"
+        onClick={handleOpenCharacter}
+      >
         <span className="auth-mode-icon">
           💾
         </span>
@@ -70,9 +79,7 @@ function AuthPanel({
 
         <div className="auth-user">
           <div className="auth-avatar-fallback">
-            {characterName
-              ?.charAt(0)
-              ?.toUpperCase() || "?"}
+            {fallbackLetter}
           </div>
 
           <div className="auth-user-info">
@@ -86,7 +93,7 @@ function AuthPanel({
             </span>
           </div>
         </div>
-      </div>
+      </button>
 
       <button
         type="button"
