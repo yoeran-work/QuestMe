@@ -1,3 +1,5 @@
+import { formatQuestType } from "../utils/questSchedule";
+
 function QuestCard({
   quest,
   completed,
@@ -6,9 +8,19 @@ function QuestCard({
   onDelete
 }) {
   return (
-    <div className={`quest-card ${completed ? "completed" : ""}`}>
+    <div
+      className={`quest-card ${
+        completed ? "completed" : ""
+      }`}
+    >
       <div className="quest-content">
-        <h3>{quest.title}</h3>
+        <div className="quest-title-row">
+          <h3>{quest.title}</h3>
+
+          <span className="quest-type-badge">
+            {formatQuestType(quest.type)}
+          </span>
+        </div>
 
         <div className="quest-rewards">
           <span>⭐ +{quest.xp} XP</span>
@@ -17,27 +29,25 @@ function QuestCard({
       </div>
 
       <div className="quest-actions">
-        {onEdit && (
-          <button
-            type="button"
-            className="quest-action-button"
-            onClick={() => onEdit(quest)}
-            title="Quest bewerken"
-          >
-            ✏️
-          </button>
-        )}
+        <button
+          type="button"
+          className="quest-action-button"
+          onClick={() => onEdit(quest)}
+          title="Quest bewerken"
+          aria-label={`Edit ${quest.title}`}
+        >
+          ✏️
+        </button>
 
-        {onDelete && (
-          <button
-            type="button"
-            className="quest-action-button delete"
-            onClick={() => onDelete(quest)}
-            title="Quest verwijderen"
-          >
-            🗑️
-          </button>
-        )}
+        <button
+          type="button"
+          className="quest-action-button quest-delete-button"
+          onClick={() => onDelete(quest)}
+          title="Quest verwijderen"
+          aria-label={`Delete ${quest.title}`}
+        >
+          🗑️
+        </button>
 
         <button
           type="button"
