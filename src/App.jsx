@@ -1,32 +1,40 @@
 import { useEffect, useState } from "react";
+
 import { getXpProgress } from "./utils/leveling";
+
 import {
   loadAppData,
   saveAppData
 } from "./utils/storage";
+
+import {
+  getCompletionPeriodKey,
+  isQuestCompleted,
+  normalizeQuestType
+} from "./utils/questSchedule";
+
 import starterQuests from "./data/starterQuests";
+
 import QuestList from "./components/QuestList";
 import QuestForm from "./components/QuestForm";
 import CharacterCard from "./components/CharacterCard";
 import Wallet from "./components/Wallet";
 
-function getTodayKey() {
-  const today = new Date();
-
-  const year = today.getFullYear();
-  const month = String(today.getMonth() + 1).padStart(2, "0");
-  const day = String(today.getDate()).padStart(2, "0");
-
-  return `${year}-${month}-${day}`;
-}
+import "./quest-management.css";
 
 function App() {
   const [appData, setAppData] = useState(() => {
     const savedData = loadAppData();
 
-    if (savedData.quests.length === 0) {
+    if (!savedData.meta.starterQuestsSeeded) {
       return {
         ...savedData,
+
+        meta: {
+          ...savedData.meta,
+          starterQuestsSeeded: true
+        },
+
         quests: starterQuests
       };
     }
@@ -34,58 +42,108 @@ function App() {
     return savedData;
   });
 
-  const [editingQuest, setEditingQuest] = useState(null);
+  const [editingQuest, setEditingQuest] =
+    useState(null);
 
-  const { profile, quests, questCompletions } = appData;
+  const {
+    profile,
+    quests,
+    questCompletions
+  } = appData;
 
   const xp = profile.totalXp;
   const yBucks = profile.yBucks;
 
   const progress = getXpProgress(xp);
 
-  const today = getTodayKey();
+  const now = new Date();
 
-  const completedTodayIds = questCompletions
-    .filter((completion) => completion.completedDate === today)
-    .map((completion) => completion.questId);
+  const completedQuestIds = quests
+    .filter((quest) =>
+      isQuestCompleted(
+        quest,
+        questCompletions,
+        now
+      )
+    )
+    .map((quest) => quest.id);
 
   useEffect(() => {
     saveAppData(appData);
   }, [appData]);
 
   function completeQuest(quest) {
-    if (completedTodayIds.includes(quest.id)) {
-      return;
-    }
+    const completedAt = new Date();
 
-    const completion = {
-      id: crypto.randomUUID(),
-      questId: quest.id,
-      completedAt: new Date().toISOString(),
-      completedDate: today,
-      xpEarned: quest.xp,
-      yEarned: quest.y
-    };
+    setAppData((currentData) => {
+      const alreadyCompleted = isQuestCompleted(
+        quest,
+        currentData.questCompletions,
+        completedAt
+      );
 
-    setAppData((currentData) => ({
-      ...currentData,
+      if (alreadyCompleted) {
+        return currentData;
+      }
 
-      profile: {
-        ...currentData.profile,
-        totalXp: currentData.profile.totalXp + quest.xp,
-        yBucks: currentData.profile.yBucks + quest.y
-      },
+      const questType =
+        normalizeQuestType(quest.type);
 
-      questCompletions: [
-        ...currentData.questCompletions,
-        completion
-      ]
-    }));
+      const completion = {
+        id: crypto.randomUUID(),
+
+        questId: quest.id,
+
+        questTitle: quest.title,
+        questType,
+
+        completedAt:
+          completedAt.toISOString(),
+
+        completedDate:
+          `${completedAt.getFullYear()}-${String(
+            completedAt.getMonth() + 1
+          ).padStart(2, "0")}-${String(
+            completedAt.getDate()
+          ).padStart(2, "0")}`,
+
+        periodKey:
+          getCompletionPeriodKey(
+            questType,
+            completedAt
+          ),
+
+        xpEarned: quest.xp,
+        yEarned: quest.y
+      };
+
+      return {
+        ...currentData,
+
+        profile: {
+          ...currentData.profile,
+
+          totalXp:
+            currentData.profile.totalXp +
+            quest.xp,
+
+          yBucks:
+            currentData.profile.yBucks +
+            quest.y
+        },
+
+        questCompletions: [
+          ...currentData.questCompletions,
+          completion
+        ]
+      };
+    });
   }
 
   function addQuest(newQuest) {
     setAppData((currentData) => ({
       ...currentData,
+
       quests: [
         ...currentData.quests,
         newQuest
@@ -95,16 +153,22 @@ function App() {
 
   function editQuest(quest) {
     setEditingQuest(quest);
+
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth"
+    });
   }
 
   function saveEditedQuest(updatedQuest) {
     setAppData((currentData) => ({
       ...currentData,
 
-      quests: currentData.quests.map((quest) =>
-        quest.id === updatedQuest.id
-          ? updatedQuest
-          : quest
+      quests: currentData.quests.map(
+        (quest) =>
+          quest.id === updatedQuest.id
+            ? updatedQuest
+            : quest
       )
     }));
 
@@ -128,7 +192,8 @@ function App() {
       ...currentData,
 
       quests: currentData.quests.filter(
-        (currentQuest) => currentQuest.id !== quest.id
+        (currentQuest) =>
+          currentQuest.id !== quest.id
       )
     }));
 
@@ -159,7 +224,8 @@ function App() {
             <h2>⚔️ Quests</h2>
 
             <span>
-              {completedTodayIds.length}/{quests.length} completed
+              {completedQuestIds.length}/
+              {quests.length} available period completed
             </span>
           </div>
 
@@ -172,7 +238,9 @@ function App() {
 
           <QuestList
             quests={quests}
-            completedQuests={completedTodayIds}
+            completedQuests={
+              completedQuestIds
+            }
             onComplete={completeQuest}
             onEdit={editQuest}
             onDelete={deleteQuest}
