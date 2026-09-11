@@ -1,0 +1,238 @@
+/* =========================================
+   CLOUD CONFLICT DIALOG
+   ========================================= */
+
+.cloud-conflict-backdrop {
+  position: fixed;
+  inset: 0;
+
+  z-index: 1100;
+
+  display: grid;
+  place-items: center;
+
+  padding: 20px;
+
+  background:
+    rgba(3, 5, 10, 0.9);
+
+  backdrop-filter: blur(12px);
+}
+
+.cloud-conflict-dialog {
+  width: min(100%, 720px);
+
+  padding: 28px;
+
+  border:
+    1px solid
+    rgba(255, 255, 255, 0.09);
+
+  border-radius: 20px;
+
+  background:
+    linear-gradient(
+      145deg,
+      rgba(20, 24, 38, 0.99),
+      rgba(8, 11, 20, 0.99)
+    );
+
+  box-shadow:
+    0 30px 90px
+    rgba(0, 0, 0, 0.55);
+}
+
+.cloud-conflict-header {
+  margin-bottom: 22px;
+}
+
+.cloud-conflict-header h2 {
+  margin:
+    0 0 8px;
+
+  font-size: 1.35rem;
+}
+
+.cloud-conflict-header p {
+  margin: 0;
+
+  color: #858da1;
+
+  font-size: 0.78rem;
+  line-height: 1.55;
+}
+
+.cloud-conflict-saves {
+  display: grid;
+
+  grid-template-columns:
+    repeat(2, minmax(0, 1fr));
+
+  gap: 14px;
+}
+
+.cloud-save-card {
+  padding: 18px;
+
+  border:
+    1px solid
+    rgba(255, 255, 255, 0.07);
+
+  border-radius: 14px;
+
+  background:
+    rgba(255, 255, 255, 0.025);
+}
+
+.cloud-save-card h3 {
+  margin:
+    0 0 13px;
+
+  color: #f5f6fa;
+
+  font-size: 0.9rem;
+}
+
+.cloud-save-character {
+  margin-bottom: 14px;
+
+  color: #b7a7ff;
+
+  font-size: 1.05rem;
+  font-weight: 800;
+}
+
+.cloud-save-stats {
+  display: grid;
+
+  grid-template-columns:
+    repeat(2, minmax(0, 1fr));
+
+  gap: 8px;
+}
+
+.cloud-save-stat {
+  padding: 9px;
+
+  border-radius: 9px;
+
+  background:
+    rgba(0, 0, 0, 0.18);
+}
+
+.cloud-save-stat span {
+  display: block;
+
+  color: #6f778b;
+
+  font-size: 0.58rem;
+  font-weight: 800;
+
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.cloud-save-stat strong {
+  display: block;
+
+  margin-top: 3px;
+
+  color: #e8eaf0;
+
+  font-size: 0.8rem;
+}
+
+.cloud-conflict-warning {
+  margin:
+    18px 0 0;
+
+  padding: 11px 13px;
+
+  border:
+    1px solid
+    rgba(238, 177, 67, 0.16);
+
+  border-radius: 10px;
+
+  background:
+    rgba(238, 177, 67, 0.045);
+
+  color: #bda56f;
+
+  font-size: 0.68rem;
+  line-height: 1.5;
+}
+
+.cloud-conflict-actions {
+  display: grid;
+
+  grid-template-columns:
+    repeat(2, minmax(0, 1fr));
+
+  gap: 10px;
+
+  margin-top: 18px;
+}
+
+.cloud-conflict-button {
+  padding: 12px 14px;
+
+  border:
+    1px solid
+    rgba(255, 255, 255, 0.08);
+
+  border-radius: 10px;
+
+  background:
+    rgba(255, 255, 255, 0.04);
+
+  color: #e9ebf1;
+
+  font: inherit;
+  font-size: 0.75rem;
+  font-weight: 800;
+
+  cursor: pointer;
+}
+
+.cloud-conflict-button:hover {
+  background:
+    rgba(255, 255, 255, 0.07);
+}
+
+.cloud-conflict-button.cloud {
+  border-color:
+    rgba(118, 87, 255, 0.3);
+
+  background:
+    rgba(118, 87, 255, 0.12);
+
+  color: #dcd5ff;
+}
+
+.cloud-conflict-button.local {
+  border-color:
+    rgba(87, 196, 135, 0.23);
+
+  background:
+    rgba(87, 196, 135, 0.08);
+
+  color: #b4dfc5;
+}
+
+.cloud-conflict-button:disabled {
+  cursor: wait;
+
+  opacity: 0.5;
+}
+
+@media (max-width: 600px) {
+  .cloud-conflict-dialog {
+    padding: 20px;
+  }
+
+  .cloud-conflict-saves,
+  .cloud-conflict-actions {
+    grid-template-columns: 1fr;
+  }
+}
