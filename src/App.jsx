@@ -34,6 +34,8 @@ function App() {
     return savedData;
   });
 
+  const [editingQuest, setEditingQuest] = useState(null);
+
   const { profile, quests, questCompletions } = appData;
 
   const xp = profile.totalXp;
@@ -91,6 +93,50 @@ function App() {
     }));
   }
 
+  function editQuest(quest) {
+    setEditingQuest(quest);
+  }
+
+  function saveEditedQuest(updatedQuest) {
+    setAppData((currentData) => ({
+      ...currentData,
+
+      quests: currentData.quests.map((quest) =>
+        quest.id === updatedQuest.id
+          ? updatedQuest
+          : quest
+      )
+    }));
+
+    setEditingQuest(null);
+  }
+
+  function cancelEdit() {
+    setEditingQuest(null);
+  }
+
+  function deleteQuest(quest) {
+    const shouldDelete = window.confirm(
+      `Weet je zeker dat je "${quest.title}" wilt verwijderen?`
+    );
+
+    if (!shouldDelete) {
+      return;
+    }
+
+    setAppData((currentData) => ({
+      ...currentData,
+
+      quests: currentData.quests.filter(
+        (currentQuest) => currentQuest.id !== quest.id
+      )
+    }));
+
+    if (editingQuest?.id === quest.id) {
+      setEditingQuest(null);
+    }
+  }
+
   return (
     <div className="app">
       <header className="topbar">
@@ -117,12 +163,19 @@ function App() {
             </span>
           </div>
 
-          <QuestForm onAddQuest={addQuest} />
+          <QuestForm
+            onAddQuest={addQuest}
+            editingQuest={editingQuest}
+            onSaveEdit={saveEditedQuest}
+            onCancelEdit={cancelEdit}
+          />
 
           <QuestList
             quests={quests}
             completedQuests={completedTodayIds}
             onComplete={completeQuest}
+            onEdit={editQuest}
+            onDelete={deleteQuest}
           />
         </section>
 
