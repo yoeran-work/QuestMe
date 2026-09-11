@@ -2,17 +2,13 @@ import "../auth.css";
 
 function AuthPanel({
   user,
+  characterName,
   authLoading,
   authError,
   onSignIn,
   onSignOut
 }) {
   if (user) {
-    const fallbackLetter =
-      user.displayName?.trim()?.charAt(0)?.toUpperCase() ||
-      user.email?.charAt(0)?.toUpperCase() ||
-      "?";
-
     return (
       <div className="auth-panel">
         <div className="auth-status cloud">
@@ -21,34 +17,25 @@ function AuthPanel({
           </span>
 
           <span className="auth-mode-text">
-            Cloud
+            Synced
           </span>
 
           <div className="auth-user">
-            {user.photoURL ? (
-              <img
-                className="auth-avatar"
-                src={user.photoURL}
-                alt=""
-                referrerPolicy="no-referrer"
-              />
-            ) : (
-              <div className="auth-avatar-fallback">
-                {fallbackLetter}
-              </div>
-            )}
+            <div className="auth-avatar-fallback">
+              {characterName
+                ?.charAt(0)
+                ?.toUpperCase() || "?"}
+            </div>
 
             <div className="auth-user-info">
               <span className="auth-user-name">
-                {user.displayName ||
+                {characterName ||
                   "QuestMe player"}
               </span>
 
-              {user.email && (
-                <span className="auth-user-email">
-                  {user.email}
-                </span>
-              )}
+              <span className="auth-user-email">
+                Google connected
+              </span>
             </div>
           </div>
 
@@ -80,6 +67,25 @@ function AuthPanel({
         <span className="auth-mode-text">
           Local
         </span>
+
+        <div className="auth-user">
+          <div className="auth-avatar-fallback">
+            {characterName
+              ?.charAt(0)
+              ?.toUpperCase() || "?"}
+          </div>
+
+          <div className="auth-user-info">
+            <span className="auth-user-name">
+              {characterName ||
+                "QuestMe player"}
+            </span>
+
+            <span className="auth-user-email">
+              Device only
+            </span>
+          </div>
+        </div>
       </div>
 
       <button
