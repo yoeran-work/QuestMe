@@ -1,5 +1,5 @@
 const STORAGE_KEY = "questme-data";
-const STORAGE_VERSION = 2;
+const STORAGE_VERSION = 3;
 
 export function createInitialData() {
   return {
@@ -10,6 +10,7 @@ export function createInitialData() {
     },
 
     profile: {
+      characterName: "",
       totalXp: 0,
       yBucks: 0
     },
@@ -49,7 +50,9 @@ function normalizeData(data) {
       ? data.quests
       : [],
 
-    questCompletions: Array.isArray(data.questCompletions)
+    questCompletions: Array.isArray(
+      data.questCompletions
+    )
       ? data.questCompletions
       : [],
 
@@ -61,7 +64,9 @@ function normalizeData(data) {
       ? data.purchases
       : [],
 
-    consumedRewards: Array.isArray(data.consumedRewards)
+    consumedRewards: Array.isArray(
+      data.consumedRewards
+    )
       ? data.consumedRewards
       : []
   };
@@ -70,6 +75,7 @@ function normalizeData(data) {
 function migrateData(oldData) {
   if (
     oldData.version === 1 ||
+    oldData.version === 2 ||
     oldData.version === undefined
   ) {
     return normalizeData({
@@ -79,8 +85,18 @@ function migrateData(oldData) {
         ...(oldData.meta || {}),
 
         starterQuestsSeeded:
-          Array.isArray(oldData.quests) &&
-          oldData.quests.length > 0
+          oldData.meta?.starterQuestsSeeded ??
+          (
+            Array.isArray(oldData.quests) &&
+            oldData.quests.length > 0
+          )
+      },
+
+      profile: {
+        ...(oldData.profile || {}),
+
+        characterName:
+          oldData.profile?.characterName || ""
       }
     });
   }
@@ -94,7 +110,8 @@ function migrateData(oldData) {
 
 export function loadAppData() {
   try {
-    const storedData = localStorage.getItem(STORAGE_KEY);
+    const storedData =
+      localStorage.getItem(STORAGE_KEY);
 
     if (!storedData) {
       return createInitialData();
@@ -102,11 +119,16 @@ export function loadAppData() {
 
     const parsedData = JSON.parse(storedData);
 
-    if (!parsedData || typeof parsedData !== "object") {
+    if (
+      !parsedData ||
+      typeof parsedData !== "object"
+    ) {
       return createInitialData();
     }
 
-    if (parsedData.version !== STORAGE_VERSION) {
+    if (
+      parsedData.version !== STORAGE_VERSION
+    ) {
       return migrateData(parsedData);
     }
 
@@ -125,6 +147,7 @@ export function saveAppData(data) {
   try {
     localStorage.setItem(
       STORAGE_KEY,
+
       JSON.stringify({
         ...data,
         version: STORAGE_VERSION
