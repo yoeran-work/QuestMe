@@ -1,6 +1,11 @@
-import { useEffect, useState } from "react";
+import {
+  useEffect,
+  useState
+} from "react";
 
-import { getXpProgress } from "./utils/leveling";
+import {
+  getXpProgress
+} from "./utils/leveling";
 
 import {
   loadAppData,
@@ -13,40 +18,62 @@ import {
   normalizeQuestType
 } from "./utils/questSchedule";
 
-import { useAuth } from "./hooks/useAuth";
+import {
+  useAuth
+} from "./hooks/useAuth";
 
-import starterQuests from "./data/starterQuests";
+import starterQuests
+  from "./data/starterQuests";
 
-import QuestList from "./components/QuestList";
-import QuestForm from "./components/QuestForm";
-import CharacterCard from "./components/CharacterCard";
-import Wallet from "./components/Wallet";
-import AuthPanel from "./components/AuthPanel";
+import QuestList
+  from "./components/QuestList";
+
+import QuestForm
+  from "./components/QuestForm";
+
+import CharacterCard
+  from "./components/CharacterCard";
+
+import Wallet
+  from "./components/Wallet";
+
+import AuthPanel
+  from "./components/AuthPanel";
+
+import CharacterSetup
+  from "./components/CharacterSetup";
 
 import "./quest-management.css";
 
 function App() {
-  const [appData, setAppData] = useState(() => {
-    const savedData = loadAppData();
+  const [appData, setAppData] =
+    useState(() => {
+      const savedData =
+        loadAppData();
 
-    if (!savedData.meta.starterQuestsSeeded) {
-      return {
-        ...savedData,
+      if (
+        !savedData.meta
+          .starterQuestsSeeded
+      ) {
+        return {
+          ...savedData,
 
-        meta: {
-          ...savedData.meta,
-          starterQuestsSeeded: true
-        },
+          meta: {
+            ...savedData.meta,
+            starterQuestsSeeded: true
+          },
 
-        quests: starterQuests
-      };
-    }
+          quests: starterQuests
+        };
+      }
 
-    return savedData;
-  });
+      return savedData;
+    });
 
-  const [editingQuest, setEditingQuest] =
-    useState(null);
+  const [
+    editingQuest,
+    setEditingQuest
+  ] = useState(null);
 
   const {
     user,
@@ -62,109 +89,165 @@ function App() {
     questCompletions
   } = appData;
 
-  const xp = profile.totalXp;
-  const yBucks = profile.yBucks;
+  const characterName =
+    profile.characterName || "";
 
-  const progress = getXpProgress(xp);
+  const xp =
+    profile.totalXp;
 
-  const now = new Date();
+  const yBucks =
+    profile.yBucks;
 
-  const completedQuestIds = quests
-    .filter((quest) =>
-      isQuestCompleted(
-        quest,
-        questCompletions,
-        now
+  const progress =
+    getXpProgress(xp);
+
+  const now =
+    new Date();
+
+  const completedQuestIds =
+    quests
+      .filter((quest) =>
+        isQuestCompleted(
+          quest,
+          questCompletions,
+          now
+        )
       )
-    )
-    .map((quest) => quest.id);
+      .map(
+        (quest) => quest.id
+      );
 
   useEffect(() => {
     saveAppData(appData);
   }, [appData]);
 
-  function completeQuest(quest) {
-    const completedAt = new Date();
-
-    setAppData((currentData) => {
-      const alreadyCompleted =
-        isQuestCompleted(
-          quest,
-          currentData.questCompletions,
-          completedAt
-        );
-
-      if (alreadyCompleted) {
-        return currentData;
-      }
-
-      const questType =
-        normalizeQuestType(quest.type);
-
-      const completion = {
-        id: crypto.randomUUID(),
-
-        questId: quest.id,
-
-        questTitle: quest.title,
-        questType,
-
-        completedAt:
-          completedAt.toISOString(),
-
-        completedDate:
-          `${completedAt.getFullYear()}-${String(
-            completedAt.getMonth() + 1
-          ).padStart(2, "0")}-${String(
-            completedAt.getDate()
-          ).padStart(2, "0")}`,
-
-        periodKey:
-          getCompletionPeriodKey(
-            questType,
-            completedAt
-          ),
-
-        xpEarned: quest.xp,
-        yEarned: quest.y
-      };
-
-      return {
+  function saveCharacterName(
+    name
+  ) {
+    setAppData(
+      (currentData) => ({
         ...currentData,
 
         profile: {
           ...currentData.profile,
+          characterName: name
+        }
+      })
+    );
+  }
 
-          totalXp:
-            currentData.profile.totalXp +
+  function completeQuest(
+    quest
+  ) {
+    const completedAt =
+      new Date();
+
+    setAppData(
+      (currentData) => {
+        const alreadyCompleted =
+          isQuestCompleted(
+            quest,
+            currentData
+              .questCompletions,
+            completedAt
+          );
+
+        if (
+          alreadyCompleted
+        ) {
+          return currentData;
+        }
+
+        const questType =
+          normalizeQuestType(
+            quest.type
+          );
+
+        const completion = {
+          id:
+            crypto.randomUUID(),
+
+          questId:
+            quest.id,
+
+          questTitle:
+            quest.title,
+
+          questType,
+
+          completedAt:
+            completedAt
+              .toISOString(),
+
+          completedDate:
+            `${completedAt.getFullYear()}-${String(
+              completedAt.getMonth() + 1
+            ).padStart(2, "0")}-${String(
+              completedAt.getDate()
+            ).padStart(2, "0")}`,
+
+          periodKey:
+            getCompletionPeriodKey(
+              questType,
+              completedAt
+            ),
+
+          xpEarned:
             quest.xp,
 
-          yBucks:
-            currentData.profile.yBucks +
+          yEarned:
             quest.y
-        },
+        };
 
-        questCompletions: [
-          ...currentData.questCompletions,
-          completion
+        return {
+          ...currentData,
+
+          profile: {
+            ...currentData.profile,
+
+            totalXp:
+              currentData.profile
+                .totalXp +
+              quest.xp,
+
+            yBucks:
+              currentData.profile
+                .yBucks +
+              quest.y
+          },
+
+          questCompletions: [
+            ...currentData
+              .questCompletions,
+
+            completion
+          ]
+        };
+      }
+    );
+  }
+
+  function addQuest(
+    newQuest
+  ) {
+    setAppData(
+      (currentData) => ({
+        ...currentData,
+
+        quests: [
+          ...currentData.quests,
+          newQuest
         ]
-      };
-    });
+      })
+    );
   }
 
-  function addQuest(newQuest) {
-    setAppData((currentData) => ({
-      ...currentData,
-
-      quests: [
-        ...currentData.quests,
-        newQuest
-      ]
-    }));
-  }
-
-  function editQuest(quest) {
-    setEditingQuest(quest);
+  function editQuest(
+    quest
+  ) {
+    setEditingQuest(
+      quest
+    );
 
     window.scrollTo({
       top: 0,
@@ -172,117 +255,229 @@ function App() {
     });
   }
 
-  function saveEditedQuest(updatedQuest) {
-    setAppData((currentData) => ({
-      ...currentData,
+  function saveEditedQuest(
+    updatedQuest
+  ) {
+    setAppData(
+      (currentData) => ({
+        ...currentData,
 
-      quests: currentData.quests.map(
-        (quest) =>
-          quest.id === updatedQuest.id
-            ? updatedQuest
-            : quest
-      )
-    }));
+        quests:
+          currentData
+            .quests
+            .map(
+              (quest) =>
+                quest.id ===
+                updatedQuest.id
+                  ? updatedQuest
+                  : quest
+            )
+      })
+    );
 
-    setEditingQuest(null);
+    setEditingQuest(
+      null
+    );
   }
 
   function cancelEdit() {
-    setEditingQuest(null);
+    setEditingQuest(
+      null
+    );
   }
 
-  function deleteQuest(quest) {
-    const shouldDelete = window.confirm(
-      `Weet je zeker dat je "${quest.title}" wilt verwijderen?`
-    );
+  function deleteQuest(
+    quest
+  ) {
+    const shouldDelete =
+      window.confirm(
+        `Weet je zeker dat je "${quest.title}" wilt verwijderen?`
+      );
 
-    if (!shouldDelete) {
+    if (
+      !shouldDelete
+    ) {
       return;
     }
 
-    setAppData((currentData) => ({
-      ...currentData,
+    setAppData(
+      (currentData) => ({
+        ...currentData,
 
-      quests: currentData.quests.filter(
-        (currentQuest) =>
-          currentQuest.id !== quest.id
-      )
-    }));
+        quests:
+          currentData
+            .quests
+            .filter(
+              (
+                currentQuest
+              ) =>
+                currentQuest.id !==
+                quest.id
+            )
+      })
+    );
 
-    if (editingQuest?.id === quest.id) {
-      setEditingQuest(null);
+    if (
+      editingQuest?.id ===
+      quest.id
+    ) {
+      setEditingQuest(
+        null
+      );
     }
   }
 
   return (
     <div className="app">
+      {!characterName && (
+        <CharacterSetup
+          currentName={
+            characterName
+          }
+          onSave={
+            saveCharacterName
+          }
+        />
+      )}
+
       <header className="topbar">
         <div>
-          <h1>⚔️ QuestMe</h1>
-          <p>Turn real life into an RPG.</p>
+          <h1>
+            ⚔️ QuestMe
+          </h1>
+
+          <p>
+            Turn real life
+            into an RPG.
+          </p>
         </div>
 
         <div className="topbar-actions">
-          <Wallet yBucks={yBucks} />
+          <Wallet
+            yBucks={
+              yBucks
+            }
+          />
 
           <AuthPanel
-            user={user}
-            authLoading={authLoading}
-            authError={authError}
-            onSignIn={signInWithGoogle}
-            onSignOut={signOutUser}
+            user={
+              user
+            }
+            characterName={
+              characterName
+            }
+            authLoading={
+              authLoading
+            }
+            authError={
+              authError
+            }
+            onSignIn={
+              signInWithGoogle
+            }
+            onSignOut={
+              signOutUser
+            }
           />
         </div>
       </header>
 
       <main>
         <CharacterCard
-          progress={progress}
-          xp={xp}
+          progress={
+            progress
+          }
+          xp={
+            xp
+          }
+          characterName={
+            characterName
+          }
         />
 
         <section className="section">
           <div className="section-heading">
-            <h2>⚔️ Quests</h2>
+            <h2>
+              ⚔️ Quests
+            </h2>
 
             <span>
-              {completedQuestIds.length}/
-              {quests.length} available period completed
+              {
+                completedQuestIds
+                  .length
+              }
+              /
+              {
+                quests.length
+              }{" "}
+              available period
+              completed
             </span>
           </div>
 
           <QuestForm
-            onAddQuest={addQuest}
-            editingQuest={editingQuest}
-            onSaveEdit={saveEditedQuest}
-            onCancelEdit={cancelEdit}
+            onAddQuest={
+              addQuest
+            }
+            editingQuest={
+              editingQuest
+            }
+            onSaveEdit={
+              saveEditedQuest
+            }
+            onCancelEdit={
+              cancelEdit
+            }
           />
 
           <QuestList
-            quests={quests}
+            quests={
+              quests
+            }
             completedQuests={
               completedQuestIds
             }
-            onComplete={completeQuest}
-            onEdit={editQuest}
-            onDelete={deleteQuest}
+            onComplete={
+              completeQuest
+            }
+            onEdit={
+              editQuest
+            }
+            onDelete={
+              deleteQuest
+            }
           />
         </section>
 
         <section className="coming-soon">
           <div>
-            <h2>🛒 Store</h2>
-            <p>Coming soon...</p>
+            <h2>
+              🛒 Store
+            </h2>
+
+            <p>
+              Coming soon...
+            </p>
           </div>
 
           <div>
-            <h2>🎒 Inventory</h2>
-            <p>Coming soon...</p>
+            <h2>
+              🎒 Inventory
+            </h2>
+
+            <p>
+              Coming soon...
+            </p>
           </div>
 
           <div>
-            <h2>📊 Statistics</h2>
-            <p>Coming soon...</p>
+            <h2>
+              📊 Statistics
+            </h2>
+
+            <p>
+              Coming soon...
+            </p>
           </div>
         </section>
       </main>
