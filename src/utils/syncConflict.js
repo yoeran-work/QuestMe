@@ -14,6 +14,12 @@ function getNumber(value) {
     : 0;
 }
 
+function getCharacterName(data) {
+  return typeof data?.profile?.characterName === "string"
+    ? data.profile.characterName.trim()
+    : "";
+}
+
 function getComparableSave(data) {
   return {
     version: data?.version ?? 3,
@@ -27,7 +33,7 @@ function getComparableSave(data) {
 
     profile: {
       characterName:
-        data?.profile?.characterName || "",
+        getCharacterName(data),
 
       totalXp:
         getNumber(
@@ -159,6 +165,20 @@ export function hasMeaningfulLocalProgress(
     return false;
   }
 
+  /*
+   * Zodra de gebruiker bewust een character
+   * heeft aangemaakt, behandelen we deze
+   * installatie als een echte lokale save.
+   *
+   * Daardoor mag een bestaande cloudsave
+   * deze character nooit automatisch vervangen.
+   */
+  if (
+    getCharacterName(data)
+  ) {
+    return true;
+  }
+
   const profile =
     data.profile || {};
 
@@ -209,7 +229,7 @@ export function getSaveSummary(
 ) {
   return {
     characterName:
-      data?.profile?.characterName ||
+      getCharacterName(data) ||
       "Adventurer",
 
     totalXp:
