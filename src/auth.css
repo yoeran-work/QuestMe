@@ -277,3 +277,16 @@
     display: none;
   }
 }
+
+.auth-status {
+  font: inherit;
+  cursor: pointer;
+}
+
+.auth-status:hover {
+  border-color:
+    rgba(145, 101, 255, 0.22);
+
+  background:
+    rgba(118, 87, 255, 0.07);
+}
