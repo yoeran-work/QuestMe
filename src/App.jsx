@@ -1,5 +1,6 @@
 import {
   useEffect,
+  useRef,
   useState
 } from "react";
 
@@ -11,6 +12,11 @@ import {
   loadAppData,
   saveAppData
 } from "./utils/storage";
+
+import {
+  getCloudSave,
+  saveCloudData
+} from "./utils/cloudStorage";
 
 import {
   getCompletionPeriodKey,
@@ -43,6 +49,9 @@ import AuthPanel
 import CharacterSetup
   from "./components/CharacterSetup";
 
+import CloudStatus
+  from "./components/CloudStatus";
+
 import "./quest-management.css";
 
 function App() {
@@ -74,6 +83,19 @@ function App() {
     editingQuest,
     setEditingQuest
   ] = useState(null);
+
+  const [
+    cloudState,
+    setCloudState
+  ] = useState("idle");
+
+  const [
+    cloudInitialized,
+    setCloudInitialized
+  ] = useState(false);
+
+  const cloudSaveTimer =
+    useRef(null);
 
   const {
     user,
@@ -120,6 +142,154 @@ function App() {
   useEffect(() => {
     saveAppData(appData);
   }, [appData]);
+
+  useEffect(() => {
+    if (!user) {
+      setCloudInitialized(false);
+      setCloudState("idle");
+      return;
+    }
+
+    let cancelled = false;
+
+    async function initializeCloud() {
+      try {
+        setCloudState("checking");
+
+        const cloudData =
+          await getCloudSave(
+            user.uid
+          );
+
+        if (cancelled) {
+          return;
+        }
+
+        if (!cloudData) {
+          setCloudState(
+            "uploading"
+          );
+
+          await saveCloudData(
+            user.uid,
+            appData
+          );
+
+          if (cancelled) {
+            return;
+          }
+
+          setCloudInitialized(
+            true
+          );
+
+          setCloudState(
+            "synced"
+          );
+
+          return;
+        }
+
+        setCloudState(
+          "downloading"
+        );
+
+        setAppData(
+          cloudData
+        );
+
+        setEditingQuest(
+          null
+        );
+
+        setCloudInitialized(
+          true
+        );
+
+        setCloudState(
+          "synced"
+        );
+      } catch (error) {
+        console.error(
+          "QuestMe: cloud initialization failed.",
+          error
+        );
+
+        if (!cancelled) {
+          setCloudState(
+            "error"
+          );
+        }
+      }
+    }
+
+    initializeCloud();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [user]);
+
+  useEffect(() => {
+    if (
+      !user ||
+      !cloudInitialized
+    ) {
+      return;
+    }
+
+    if (
+      cloudSaveTimer.current
+    ) {
+      clearTimeout(
+        cloudSaveTimer.current
+      );
+    }
+
+    cloudSaveTimer.current =
+      setTimeout(
+        async () => {
+          try {
+            setCloudState(
+              "saving"
+            );
+
+            await saveCloudData(
+              user.uid,
+              appData
+            );
+
+            setCloudState(
+              "synced"
+            );
+          } catch (error) {
+            console.error(
+              "QuestMe: cloud save failed.",
+              error
+            );
+
+            setCloudState(
+              "error"
+            );
+          }
+        },
+        600
+      );
+
+    return () => {
+      if (
+        cloudSaveTimer.current
+      ) {
+        clearTimeout(
+          cloudSaveTimer.current
+        );
+      }
+    };
+  }, [
+    appData,
+    user,
+    cloudInitialized
+  ]);
 
   function saveCharacterName(
     name
@@ -356,6 +526,15 @@ function App() {
           <Wallet
             yBucks={
               yBucks
+            }
+          />
+
+          <CloudStatus
+            user={
+              user
+            }
+            cloudState={
+              cloudState
             }
           />
 
