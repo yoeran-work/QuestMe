@@ -1,0 +1,406 @@
+/* =========================================
+   QUEST MANAGEMENT
+   ========================================= */
+
+.quest-form {
+  margin-bottom: 22px;
+  padding: 18px;
+
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+
+  background:
+    linear-gradient(
+      135deg,
+      rgba(118, 87, 255, 0.07),
+      rgba(255, 255, 255, 0.025)
+    );
+
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.025);
+}
+
+.quest-form-editing {
+  border-color: rgba(167, 120, 255, 0.35);
+
+  box-shadow:
+    0 0 0 1px rgba(118, 87, 255, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.04);
+}
+
+
+/* HEADER */
+
+.quest-form-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+
+  margin-bottom: 16px;
+}
+
+.quest-form-header > div {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.quest-form-header strong {
+  font-size: 0.95rem;
+}
+
+.quest-form-header span {
+  color: #777f95;
+  font-size: 0.75rem;
+}
+
+
+/* FIELDS */
+
+.quest-form-fields {
+  display: grid;
+
+  grid-template-columns:
+    minmax(240px, 1fr)
+    100px
+    100px
+    150px;
+
+  gap: 10px;
+}
+
+.quest-field {
+  min-width: 0;
+
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.quest-field > span {
+  padding-left: 2px;
+
+  color: #777f95;
+
+  font-size: 0.68rem;
+  font-weight: 700;
+
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.quest-form input,
+.quest-form select {
+  width: 100%;
+  height: 42px;
+
+  padding: 0 12px;
+
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  border-radius: 9px;
+
+  outline: none;
+
+  background: rgba(5, 8, 15, 0.7);
+
+  color: #ffffff;
+
+  font: inherit;
+  font-size: 0.84rem;
+
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    background 0.2s ease;
+}
+
+.quest-form select {
+  cursor: pointer;
+}
+
+.quest-form select option {
+  background: #101421;
+  color: #ffffff;
+}
+
+.quest-form input::placeholder {
+  color: #52596d;
+}
+
+.quest-form input:focus,
+.quest-form select:focus {
+  border-color: rgba(167, 120, 255, 0.65);
+
+  background: rgba(7, 10, 18, 0.95);
+
+  box-shadow:
+    0 0 0 3px rgba(118, 87, 255, 0.09);
+}
+
+
+/* SUBMIT */
+
+.quest-form .quest-submit-button {
+  width: 100%;
+
+  margin-top: 14px;
+  padding: 11px 18px;
+
+  border: 1px solid rgba(167, 120, 255, 0.4);
+  border-radius: 10px;
+
+  background:
+    linear-gradient(
+      135deg,
+      #6f54eb,
+      #8d62f7
+    );
+
+  color: #ffffff;
+
+  font-size: 0.82rem;
+  font-weight: 800;
+
+  cursor: pointer;
+
+  box-shadow:
+    0 8px 24px rgba(84, 52, 190, 0.15);
+
+  transition:
+    transform 0.15s ease,
+    filter 0.15s ease,
+    box-shadow 0.15s ease;
+}
+
+.quest-form .quest-submit-button:hover {
+  filter: brightness(1.08);
+
+  transform: translateY(-1px);
+
+  box-shadow:
+    0 10px 28px rgba(84, 52, 190, 0.22);
+}
+
+.quest-form .quest-submit-button:active {
+  transform: translateY(0);
+}
+
+
+/* CANCEL */
+
+.quest-form .quest-cancel-button {
+  padding: 6px 10px;
+
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
+
+  background: rgba(255, 255, 255, 0.035);
+
+  color: #9299ac;
+
+  font-size: 0.72rem;
+  font-weight: 700;
+
+  cursor: pointer;
+}
+
+.quest-form .quest-cancel-button:hover {
+  background: rgba(255, 255, 255, 0.07);
+  color: #ffffff;
+}
+
+
+/* =========================================
+   QUEST CARD EXTRAS
+   ========================================= */
+
+.quest-title-row {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 9px;
+}
+
+.quest-type-badge {
+  padding: 4px 7px;
+
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 999px;
+
+  background: rgba(255, 255, 255, 0.035);
+
+  color: #858da1;
+
+  font-size: 0.64rem;
+  font-weight: 700;
+}
+
+
+/* ACTIONS */
+
+.quest-actions {
+  flex-shrink: 0;
+
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.quest-card .quest-action-button {
+  width: 34px;
+  height: 34px;
+
+  padding: 0;
+
+  display: grid;
+  place-items: center;
+
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 8px;
+
+  background: rgba(255, 255, 255, 0.025);
+
+  font-size: 0.76rem;
+
+  cursor: pointer;
+
+  opacity: 0.65;
+
+  transition:
+    opacity 0.2s ease,
+    background 0.2s ease,
+    border-color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.quest-card .quest-action-button:hover {
+  opacity: 1;
+
+  background: rgba(255, 255, 255, 0.07);
+
+  border-color: rgba(255, 255, 255, 0.14);
+
+  transform: translateY(-1px);
+}
+
+.quest-card .quest-delete-button:hover {
+  background: rgba(220, 70, 90, 0.1);
+
+  border-color: rgba(220, 70, 90, 0.28);
+}
+
+
+/* Complete button override */
+
+.quest-card .complete-button {
+  min-width: 88px;
+}
+
+
+/* COMPLETED */
+
+.quest-card.completed {
+  opacity: 0.58;
+}
+
+.quest-card.completed .quest-action-button {
+  opacity: 0.8;
+}
+
+
+/* EMPTY STATE */
+
+.empty-quest-state {
+  padding: 40px 20px;
+
+  text-align: center;
+
+  border: 1px dashed rgba(255, 255, 255, 0.08);
+  border-radius: 14px;
+
+  background: rgba(255, 255, 255, 0.015);
+}
+
+.empty-quest-state > span {
+  display: block;
+
+  margin-bottom: 10px;
+
+  font-size: 1.7rem;
+
+  opacity: 0.7;
+}
+
+.empty-quest-state h3 {
+  margin: 0;
+
+  font-size: 0.95rem;
+}
+
+.empty-quest-state p {
+  margin: 7px 0 0;
+
+  color: #70788e;
+
+  font-size: 0.76rem;
+}
+
+
+/* =========================================
+   TABLET
+   ========================================= */
+
+@media (max-width: 850px) {
+  .quest-form-fields {
+    grid-template-columns:
+      minmax(0, 1fr)
+      1fr
+      1fr;
+  }
+
+  .quest-title-field {
+    grid-column: 1 / -1;
+  }
+
+  .quest-type-field {
+    grid-column: 1 / -1;
+  }
+}
+
+
+/* =========================================
+   MOBILE
+   ========================================= */
+
+@media (max-width: 600px) {
+  .quest-form {
+    padding: 14px;
+  }
+
+  .quest-form-fields {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .quest-title-field,
+  .quest-type-field {
+    grid-column: 1 / -1;
+  }
+
+  .quest-card {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .quest-actions {
+    width: 100%;
+  }
+
+  .quest-card .complete-button {
+    flex: 1;
+  }
+
+  .quest-title-row {
+    align-items: flex-start;
+  }
+}
