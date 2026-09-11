@@ -1,0 +1,168 @@
+/* =========================================
+   CHARACTER PROFILE
+   ========================================= */
+
+.character-name {
+  margin: 0 0 4px;
+
+  color: #ffffff;
+
+  font-size: 1rem;
+  font-weight: 800;
+
+  letter-spacing: -0.02em;
+}
+
+.character-subtitle {
+  margin: 0;
+
+  color: #727a8f;
+
+  font-size: 0.68rem;
+  font-weight: 600;
+}
+
+
+/* =========================================
+   CHARACTER SETUP
+   ========================================= */
+
+.character-setup-backdrop {
+  position: fixed;
+  inset: 0;
+
+  z-index: 1000;
+
+  display: grid;
+  place-items: center;
+
+  padding: 20px;
+
+  background:
+    rgba(3, 5, 10, 0.88);
+
+  backdrop-filter: blur(10px);
+}
+
+.character-setup {
+  width: min(100%, 430px);
+
+  padding: 28px;
+
+  border:
+    1px solid rgba(255, 255, 255, 0.09);
+
+  border-radius: 20px;
+
+  background:
+    linear-gradient(
+      145deg,
+      rgba(20, 24, 38, 0.98),
+      rgba(8, 11, 20, 0.98)
+    );
+
+  box-shadow:
+    0 30px 80px rgba(0, 0, 0, 0.5);
+}
+
+.character-setup-icon {
+  margin-bottom: 14px;
+
+  font-size: 2rem;
+}
+
+.character-setup h2 {
+  margin: 0;
+
+  font-size: 1.35rem;
+}
+
+.character-setup p {
+  margin:
+    8px 0
+    22px;
+
+  color: #777f93;
+
+  font-size: 0.78rem;
+  line-height: 1.55;
+}
+
+.character-setup label {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.character-setup label > span {
+  color: #8b92a5;
+
+  font-size: 0.68rem;
+  font-weight: 800;
+
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+}
+
+.character-setup input {
+  width: 100%;
+
+  box-sizing: border-box;
+
+  padding: 13px 14px;
+
+  border:
+    1px solid rgba(255, 255, 255, 0.1);
+
+  border-radius: 10px;
+
+  outline: none;
+
+  background:
+    rgba(4, 7, 14, 0.8);
+
+  color: #ffffff;
+
+  font: inherit;
+
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.character-setup input:focus {
+  border-color:
+    rgba(145, 105, 255, 0.7);
+
+  box-shadow:
+    0 0 0 3px
+    rgba(118, 87, 255, 0.1);
+}
+
+.character-setup button {
+  width: 100%;
+
+  margin-top: 16px;
+  padding: 12px 16px;
+
+  border: 0;
+  border-radius: 10px;
+
+  background:
+    linear-gradient(
+      135deg,
+      #7156ef,
+      #9165ff
+    );
+
+  color: #ffffff;
+
+  font: inherit;
+  font-weight: 800;
+
+  cursor: pointer;
+}
+
+.character-setup button:hover {
+  filter: brightness(1.08);
+}
