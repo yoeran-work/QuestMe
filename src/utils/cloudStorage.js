@@ -8,6 +8,85 @@ import {
 import { db } from "../firebase";
 
 const USERS_COLLECTION = "users";
+const CLOUD_SAVE_VERSION = 4;
+
+function normalizeCloudData(data = {}) {
+  return {
+    version: CLOUD_SAVE_VERSION,
+
+    meta: {
+      starterQuestsSeeded:
+        data.meta?.starterQuestsSeeded ?? true
+    },
+
+    profile: {
+      characterName:
+        data.profile?.characterName || "",
+
+      totalXp:
+        Number.isFinite(data.profile?.totalXp)
+          ? data.profile.totalXp
+          : 0,
+
+      yBucks:
+        Number.isFinite(data.profile?.yBucks)
+          ? data.profile.yBucks
+          : 0
+    },
+
+    quests: Array.isArray(data.quests)
+      ? data.quests
+      : [],
+
+    questCompletions:
+      Array.isArray(data.questCompletions)
+        ? data.questCompletions
+        : [],
+
+    rewards: Array.isArray(data.rewards)
+      ? data.rewards
+      : [],
+
+    inventory: Array.isArray(data.inventory)
+      ? data.inventory
+      : [],
+
+    purchases: Array.isArray(data.purchases)
+      ? data.purchases
+      : [],
+
+    consumptions:
+      Array.isArray(data.consumptions)
+        ? data.consumptions
+        : [],
+
+    sales: Array.isArray(data.sales)
+      ? data.sales
+      : [],
+
+    specials: Array.isArray(data.specials)
+      ? data.specials
+      : [],
+
+    lootEvents: Array.isArray(data.lootEvents)
+      ? data.lootEvents
+      : [],
+
+    lootState: {
+      pity:
+        Number.isFinite(data.lootState?.pity)
+          ? data.lootState.pity
+          : 0
+    },
+
+    // Tijdelijk behouden zodat oude v3-clouddata
+    // niet verloren gaat tijdens de migratie.
+    consumedRewards:
+      Array.isArray(data.consumedRewards)
+        ? data.consumedRewards
+        : []
+  };
+}
 
 export async function getCloudSave(uid) {
   if (!uid) {
@@ -28,43 +107,9 @@ export async function getCloudSave(uid) {
     return null;
   }
 
-  const data = snapshot.data();
-
-  return {
-    version: data.version ?? 3,
-
-    meta: data.meta ?? {
-      starterQuestsSeeded: true
-    },
-
-    profile: data.profile ?? {
-      characterName: "",
-      totalXp: 0,
-      yBucks: 0
-    },
-
-    quests: Array.isArray(data.quests)
-      ? data.quests
-      : [],
-
-    questCompletions:
-      Array.isArray(data.questCompletions)
-        ? data.questCompletions
-        : [],
-
-    rewards: Array.isArray(data.rewards)
-      ? data.rewards
-      : [],
-
-    purchases: Array.isArray(data.purchases)
-      ? data.purchases
-      : [],
-
-    consumedRewards:
-      Array.isArray(data.consumedRewards)
-        ? data.consumedRewards
-        : []
-  };
+  return normalizeCloudData(
+    snapshot.data()
+  );
 }
 
 export async function saveCloudData(
@@ -83,38 +128,11 @@ export async function saveCloudData(
     uid
   );
 
+  const normalizedData =
+    normalizeCloudData(appData);
+
   const cloudData = {
-    version: appData.version ?? 3,
-
-    meta: {
-      ...(appData.meta || {})
-    },
-
-    profile: {
-      ...(appData.profile || {})
-    },
-
-    quests: Array.isArray(appData.quests)
-      ? appData.quests
-      : [],
-
-    questCompletions:
-      Array.isArray(appData.questCompletions)
-        ? appData.questCompletions
-        : [],
-
-    rewards: Array.isArray(appData.rewards)
-      ? appData.rewards
-      : [],
-
-    purchases: Array.isArray(appData.purchases)
-      ? appData.purchases
-      : [],
-
-    consumedRewards:
-      Array.isArray(appData.consumedRewards)
-        ? appData.consumedRewards
-        : [],
+    ...normalizedData,
 
     updatedAt: serverTimestamp()
   };
