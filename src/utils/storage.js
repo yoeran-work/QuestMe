@@ -1,5 +1,5 @@
 const STORAGE_KEY = "questme-data";
-const STORAGE_VERSION = 3;
+const STORAGE_VERSION = 4;
 
 export function createInitialData() {
   return {
@@ -21,8 +21,24 @@ export function createInitialData() {
 
     rewards: [],
 
+    inventory: [],
+
     purchases: [],
 
+    consumptions: [],
+
+    sales: [],
+
+    specials: [],
+
+    lootEvents: [],
+
+    lootState: {
+      pity: 0
+    },
+
+    // Tijdelijk behouden voor backwards compatibility.
+    // Oude v3-data mag niet stilletjes verdwijnen.
     consumedRewards: []
   };
 }
@@ -60,9 +76,36 @@ function normalizeData(data) {
       ? data.rewards
       : [],
 
+    inventory: Array.isArray(data.inventory)
+      ? data.inventory
+      : [],
+
     purchases: Array.isArray(data.purchases)
       ? data.purchases
       : [],
+
+    consumptions: Array.isArray(
+      data.consumptions
+    )
+      ? data.consumptions
+      : [],
+
+    sales: Array.isArray(data.sales)
+      ? data.sales
+      : [],
+
+    specials: Array.isArray(data.specials)
+      ? data.specials
+      : [],
+
+    lootEvents: Array.isArray(data.lootEvents)
+      ? data.lootEvents
+      : [],
+
+    lootState: {
+      ...initialData.lootState,
+      ...(data.lootState || {})
+    },
 
     consumedRewards: Array.isArray(
       data.consumedRewards
@@ -76,6 +119,7 @@ function migrateData(oldData) {
   if (
     oldData.version === 1 ||
     oldData.version === 2 ||
+    oldData.version === 3 ||
     oldData.version === undefined
   ) {
     return normalizeData({
@@ -117,7 +161,8 @@ export function loadAppData() {
       return createInitialData();
     }
 
-    const parsedData = JSON.parse(storedData);
+    const parsedData =
+      JSON.parse(storedData);
 
     if (
       !parsedData ||
