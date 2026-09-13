@@ -865,7 +865,7 @@ function App() {
             </h2>
 
             <p>
-              Coming soon...
+              Deze komt eraahaaaaaan!
             </p>
           </div>
 
