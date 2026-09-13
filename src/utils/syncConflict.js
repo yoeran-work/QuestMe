@@ -20,9 +20,18 @@ function getCharacterName(data) {
     : "";
 }
 
+function getLootState(data) {
+  return {
+    pity:
+      getNumber(
+        data?.lootState?.pity
+      )
+  };
+}
+
 function getComparableSave(data) {
   return {
-    version: data?.version ?? 3,
+    version: data?.version ?? 4,
 
     meta: {
       starterQuestsSeeded:
@@ -57,9 +66,35 @@ function getComparableSave(data) {
     rewards:
       getArray(data?.rewards),
 
+    inventory:
+      getArray(data?.inventory),
+
     purchases:
       getArray(data?.purchases),
 
+    consumptions:
+      getArray(
+        data?.consumptions
+      ),
+
+    sales:
+      getArray(data?.sales),
+
+    specials:
+      getArray(data?.specials),
+
+    lootEvents:
+      getArray(
+        data?.lootEvents
+      ),
+
+    lootState:
+      getLootState(data),
+
+    /*
+     * Tijdelijk behouden zolang oude v3-data
+     * nog kan bestaan.
+     */
     consumedRewards:
       getArray(
         data?.consumedRewards
@@ -201,11 +236,34 @@ export function hasMeaningfulLocalProgress(
       data.rewards
     ).length > 0 ||
     getArray(
+      data.inventory
+    ).length > 0 ||
+    getArray(
       data.purchases
+    ).length > 0 ||
+    getArray(
+      data.consumptions
+    ).length > 0 ||
+    getArray(
+      data.sales
+    ).length > 0 ||
+    getArray(
+      data.specials
+    ).length > 0 ||
+    getArray(
+      data.lootEvents
     ).length > 0 ||
     getArray(
       data.consumedRewards
     ).length > 0
+  ) {
+    return true;
+  }
+
+  if (
+    getNumber(
+      data?.lootState?.pity
+    ) > 0
   ) {
     return true;
   }
@@ -250,6 +308,16 @@ export function getSaveSummary(
     completions:
       getArray(
         data?.questCompletions
+      ).length,
+
+    inventoryItems:
+      getArray(
+        data?.inventory
+      ).length,
+
+    rewards:
+      getArray(
+        data?.rewards
       ).length
   };
 }
