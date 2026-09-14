@@ -30,6 +30,15 @@ import {
 } from "./utils/questSchedule";
 
 import {
+  consumeInventoryItem,
+  sellInventoryItems
+} from "./utils/inventoryActions";
+
+import {
+  purchaseReward 
+} from "./utils/purchaseReward";
+
+import {
   useAuth
 } from "./hooks/useAuth";
 
@@ -63,7 +72,15 @@ import CloudStatus
 import CloudConflictDialog
   from "./components/CloudConflictDialog";
 
+import Store
+ from "./pages/Store";
+
+import Inventory
+ from "./pages/Inventory";
+
 import "./quest-management.css";
+import "./store.css";
+import "./inventory.css";
 
 function App() {
   const [appData, setAppData] =
@@ -90,6 +107,11 @@ function App() {
       return savedData;
     });
 
+  const [ 
+    activePage,
+    setActivePage
+  ] = useState("quests")
+  
   const [
     editingQuest,
     setEditingQuest
@@ -575,7 +597,114 @@ function App() {
       })
     );
   }
+function addReward(
+  newReward
+) {
+  setAppData(
+    (currentData) => ({
+      ...currentData,
 
+      rewards: [
+        ...currentData.rewards,
+        newReward
+      ]
+    })
+  );
+}
+function buyReward(
+  rewardId
+) {
+  let purchaseResult = null;
+
+  setAppData(
+    (currentData) => {
+      purchaseResult =
+        purchaseReward(
+          currentData,
+          rewardId
+        );
+
+      if (
+        !purchaseResult.success
+      ) {
+        return currentData;
+      }
+
+      return purchaseResult.data;
+    }
+  );
+
+  return purchaseResult;
+}
+function consumeReward(
+  acquisitionId
+) {
+  setAppData(
+    (currentData) => {
+      const result =
+        consumeInventoryItem(
+          currentData.inventory,
+          acquisitionId
+        );
+
+      if (!result.success) {
+        return currentData;
+      }
+
+      return {
+        ...currentData,
+
+        inventory:
+          result.inventory,
+
+        consumptions: [
+          ...currentData.consumptions,
+          result.consumption
+        ]
+      };
+    }
+  );
+}
+  function sellReward(
+  acquisitionId,
+  quantity = 1
+) {
+  setAppData(
+    (currentData) => {
+      const result =
+        sellInventoryItems(
+          currentData.inventory,
+          acquisitionId,
+          quantity,
+          1
+        );
+
+      if (!result.success) {
+        return currentData;
+      }
+
+      return {
+        ...currentData,
+
+        profile: {
+          ...currentData.profile,
+
+          yBucks:
+            currentData.profile.yBucks +
+            result.refund
+        },
+
+        inventory:
+          result.inventory,
+
+        sales: [
+          ...currentData.sales,
+          result.sale
+        ]
+      };
+    }
+  );
+}
   function editQuest(
     quest
   ) {
@@ -787,8 +916,67 @@ function App() {
           />
         </div>
       </header>
+                  <nav className="main-navigation">
+        <button
+          type="button"
+          className={
+            activePage === "quests"
+              ? "active"
+              : ""
+          }
+          onClick={() =>
+            setActivePage("quests")
+          }
+        >
+          ⚔️ Quests
+        </button>
+
+        <button
+          type="button"
+          className={
+            activePage === "store"
+              ? "active"
+              : ""
+          }
+          onClick={() =>
+            setActivePage("store")
+          }
+        >
+          🛒 Store
+        </button>
+
+        <button
+          type="button"
+          className={
+            activePage === "inventory"
+              ? "active"
+              : ""
+          }
+          onClick={() =>
+            setActivePage("inventory")
+          }
+        >
+          🎒 Inventory
+        </button>
+
+        <button
+          type="button"
+          className={
+            activePage === "stats"
+              ? "active"
+              : ""
+          }
+          onClick={() =>
+            setActivePage("stats")
+          }
+        >
+          📊 Stats
+        </button>
+      </nav>
 
       <main>
+        {activePage === "quests" && (
+          <>
         <CharacterCard
           progress={
             progress
@@ -847,38 +1035,24 @@ function App() {
             }
           />
         </section>
-
-        <section className="coming-soon">
-          <div>
-            <h2>
-              🛒 Store
-            </h2>
-
-            <p>
-              Coming soon...
-            </p>
-          </div>
-
-          <div>
-            <h2>
-              🎒 Inventory
-            </h2>
-
-            <p>
-              Deze komt eraahaaaaaan!
-            </p>
-          </div>
-
-          <div>
-            <h2>
-              📊 Statistics
-            </h2>
-
-            <p>
-              Coming soon...
-            </p>
-          </div>
-        </section>
+       </> )}
+       
+        {activePage === "store" && (
+          <Store
+            rewards={appData.rewards}
+            yBucks={yBucks}
+            onAddReward={addReward}
+            onBuyReward={buyReward}
+        />
+        )}
+        {activePage === "inventory" && (
+          <Inventory
+            inventory={appData.inventory}
+            rewards={appData.rewards}
+            onConsume={consumeReward}
+            onSell={sellReward}
+          />
+)}
       </main>
     </div>
   );
