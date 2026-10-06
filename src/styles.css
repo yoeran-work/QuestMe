@@ -590,3 +590,246 @@ main {
     gap: 10px;
   }
 }
+
+
+/* =========================================
+   QUESTME RPG UI — GLOBAL PASS
+   ========================================= */
+
+:root {
+  --qm-bg: #090b0f;
+  --qm-panel: rgba(21, 22, 24, 0.94);
+  --qm-panel-soft: rgba(255, 255, 255, 0.035);
+  --qm-border: rgba(211, 172, 92, 0.2);
+  --qm-border-strong: rgba(211, 172, 92, 0.42);
+  --qm-gold: #d3ac5c;
+  --qm-gold-light: #f1d38a;
+  --qm-red: #8f332d;
+  --qm-text: #f1eee7;
+  --qm-muted: #918d84;
+}
+
+body {
+  color: var(--qm-text);
+  background:
+    radial-gradient(circle at 50% -10%, rgba(126, 67, 42, 0.22), transparent 34rem),
+    radial-gradient(circle at 10% 35%, rgba(107, 34, 30, 0.08), transparent 28rem),
+    linear-gradient(180deg, #111216 0%, var(--qm-bg) 62%, #07080a 100%);
+}
+
+.topbar {
+  padding: 22px 0 18px;
+  border-bottom-color: var(--qm-border);
+}
+
+.topbar h1 {
+  color: var(--qm-gold-light);
+  font-family: Georgia, "Times New Roman", serif;
+  letter-spacing: -0.02em;
+}
+
+.topbar p {
+  margin-top: 4px;
+  color: var(--qm-muted);
+  font-size: 0.8rem;
+}
+
+.wallet {
+  border-color: var(--qm-border);
+  background: linear-gradient(180deg, rgba(211, 172, 92, 0.11), rgba(0, 0, 0, 0.2));
+  color: var(--qm-gold-light);
+}
+
+main {
+  padding-top: 22px;
+}
+
+.character-card {
+  position: relative;
+  overflow: hidden;
+  gap: 20px;
+  padding: 18px 20px;
+  border-color: var(--qm-border);
+  border-radius: 16px;
+  background:
+    linear-gradient(110deg, rgba(143, 51, 45, 0.13), transparent 35%),
+    linear-gradient(180deg, rgba(31, 31, 32, 0.98), rgba(15, 16, 18, 0.98));
+  box-shadow: 0 18px 45px rgba(0, 0, 0, 0.32), inset 0 1px rgba(255,255,255,.035);
+}
+
+.character-card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  border-radius: inherit;
+  box-shadow: inset 0 0 35px rgba(0, 0, 0, 0.22);
+}
+
+.character-info {
+  min-width: 155px;
+  align-items: flex-start;
+  padding: 4px 20px 4px 4px;
+  border-right-color: var(--qm-border);
+}
+
+.level-label {
+  margin-top: 9px;
+  color: var(--qm-gold);
+  font-size: .62rem;
+}
+
+.level-number {
+  color: var(--qm-gold-light);
+  background: none;
+  -webkit-text-fill-color: initial;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 2.7rem;
+}
+
+.xp-bar {
+  height: 11px;
+  border-color: rgba(211, 172, 92, .18);
+  background: #070809;
+}
+
+.xp-fill {
+  background: linear-gradient(90deg, #7d2d28, #b34c38 58%, #d3ac5c);
+  box-shadow: 0 0 14px rgba(179, 76, 56, .3);
+}
+
+.section {
+  margin-top: 26px;
+}
+
+.section-heading h2 {
+  color: var(--qm-gold-light);
+  font-family: Georgia, "Times New Roman", serif;
+}
+
+.quest-list {
+  gap: 8px;
+}
+
+.quest-card {
+  padding: 14px 16px;
+  border-color: rgba(211, 172, 92, .13);
+  border-radius: 11px;
+  background:
+    linear-gradient(90deg, rgba(143, 51, 45, .055), transparent 34%),
+    rgba(255,255,255,.022);
+}
+
+.quest-card:hover {
+  border-color: var(--qm-border-strong);
+  background: rgba(255,255,255,.04);
+}
+
+.quest-content h3 {
+  font-size: .96rem;
+}
+
+.quest-rewards {
+  gap: 8px;
+  margin-top: 7px;
+}
+
+.quest-rewards span {
+  padding: 3px 7px;
+  border: 1px solid rgba(255,255,255,.06);
+  border-radius: 999px;
+  background: rgba(0,0,0,.16);
+}
+
+.quest-rewards span:first-child {
+  color: #c6b8f3;
+}
+
+.quest-rewards span:last-child {
+  color: var(--qm-gold-light);
+}
+
+.quest-card .complete-button {
+  border-color: rgba(211, 172, 92, .38);
+  background: linear-gradient(180deg, rgba(143, 51, 45, .92), rgba(93, 29, 26, .95));
+  color: #fff2df;
+  box-shadow: inset 0 1px rgba(255,255,255,.08);
+}
+
+.quest-card .complete-button:hover:not(:disabled) {
+  border-color: rgba(241, 211, 138, .62);
+  background: linear-gradient(180deg, #a64035, #6d2521);
+}
+
+.quest-toast {
+  border-color: var(--qm-border-strong);
+  background: rgba(18, 17, 16, .97);
+  color: var(--qm-gold-light);
+}
+
+@media (max-width: 650px) {
+  .topbar {
+    width: calc(100% - 20px);
+    padding: 14px 0 10px;
+  }
+
+  .topbar p {
+    display: none;
+  }
+
+  main {
+    width: calc(100% - 20px);
+    padding-top: 12px;
+  }
+
+  .character-card {
+    flex-direction: row;
+    align-items: center;
+    gap: 12px;
+    padding: 13px 14px;
+  }
+
+  .character-info {
+    min-width: 105px;
+    padding: 0 12px 0 0;
+    border-right: 1px solid var(--qm-border);
+    border-bottom: 0;
+  }
+
+  .character-subtitle {
+    display: none;
+  }
+
+  .character-name {
+    max-width: 100px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .level-label {
+    margin-top: 5px;
+  }
+
+  .level-number {
+    font-size: 1.9rem;
+  }
+
+  .xp-header {
+    margin-bottom: 7px;
+    font-size: .72rem;
+  }
+
+  .xp-info p {
+    margin-top: 6px;
+    font-size: .68rem;
+  }
+
+  .section {
+    margin-top: 20px;
+  }
+
+  .quest-card {
+    padding: 13px;
+  }
+}
