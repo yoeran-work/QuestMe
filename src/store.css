@@ -562,3 +562,257 @@
 
   pointer-events: none;
 }
+
+/* =========================================
+   RPG SHOP / NAV / MODAL PASS
+   ========================================= */
+
+.main-navigation {
+  border-color: var(--qm-border);
+  border-radius: 12px;
+  background: rgba(14, 15, 17, .88);
+  box-shadow: 0 10px 28px rgba(0,0,0,.24);
+}
+
+.main-navigation button {
+  border: 1px solid transparent;
+  border-radius: 8px;
+  filter: grayscale(.25);
+}
+
+.main-navigation button:hover {
+  border-color: rgba(211,172,92,.16);
+  background: rgba(211,172,92,.055);
+}
+
+.main-navigation button.active {
+  border-color: rgba(211,172,92,.34);
+  background:
+    linear-gradient(180deg, rgba(143,51,45,.26), rgba(211,172,92,.07));
+  box-shadow: inset 0 1px rgba(255,255,255,.035);
+  filter: none;
+}
+
+.store-page {
+  padding-top: 22px;
+}
+
+.store-hero,
+.inventory-hero,
+.stats-hero {
+  border-color: var(--qm-border) !important;
+  border-radius: 16px !important;
+  background:
+    linear-gradient(110deg, rgba(143,51,45,.11), transparent 38%),
+    linear-gradient(180deg, rgba(30,30,31,.96), rgba(16,17,19,.96)) !important;
+  box-shadow: inset 0 1px rgba(255,255,255,.035);
+}
+
+.store-hero {
+  margin-bottom: 24px;
+  padding: 20px 22px;
+}
+
+.store-eyebrow {
+  color: var(--qm-gold);
+  opacity: .8;
+}
+
+.store-hero h1,
+.inventory-hero h1,
+.stats-hero h1 {
+  color: var(--qm-gold-light);
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(1.8rem, 4vw, 2.7rem) !important;
+}
+
+.store-wallet,
+.inventory-count {
+  border: 1px solid rgba(211,172,92,.17);
+  background: rgba(0,0,0,.24);
+}
+
+.store-wallet strong,
+.inventory-count strong {
+  color: var(--qm-gold-light);
+}
+
+.store-section {
+  margin-top: 27px;
+}
+
+.store-section-header h2 {
+  color: var(--qm-gold-light);
+  font-family: Georgia, "Times New Roman", serif;
+}
+
+.store-section-header button,
+.reward-card-actions button,
+.inventory-card-actions button,
+.inventory-modal-actions button,
+.reward-form-actions button {
+  border: 1px solid rgba(211,172,92,.28);
+  background: linear-gradient(180deg, #963a31, #672622);
+  color: #fff1dd;
+}
+
+.reward-grid,
+.inventory-grid {
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  gap: 12px;
+}
+
+.reward-card,
+.inventory-card,
+.stats-card,
+.activity-row {
+  border-color: rgba(211,172,92,.14) !important;
+  border-radius: 13px !important;
+  background:
+    linear-gradient(145deg, rgba(255,255,255,.035), rgba(0,0,0,.06)),
+    rgba(19,20,22,.9) !important;
+  box-shadow: inset 0 1px rgba(255,255,255,.025);
+}
+
+.reward-card {
+  min-height: 225px;
+  padding: 16px;
+}
+
+.reward-icon,
+.inventory-icon,
+.activity-icon {
+  border: 1px solid rgba(211,172,92,.14);
+  background: rgba(0,0,0,.22) !important;
+}
+
+.reward-icon {
+  display: grid;
+  place-items: center;
+  width: 58px;
+  height: 58px;
+  margin-bottom: 12px;
+  border-radius: 12px;
+  font-size: 2rem;
+}
+
+.reward-card-meta span:first-child {
+  color: var(--qm-gold-light);
+}
+
+.reward-card-actions .secondary-button,
+.inventory-card-actions .secondary-button,
+.inventory-modal-actions .secondary-button,
+.reward-form-actions .secondary-button {
+  border-color: rgba(255,255,255,.09);
+  background: rgba(255,255,255,.055);
+  color: var(--qm-muted);
+}
+
+.reward-form-panel,
+.inventory-modal,
+.quest-form-modal .quest-form {
+  border-color: var(--qm-border-strong) !important;
+  background:
+    linear-gradient(145deg, rgba(31,29,27,.99), rgba(13,14,16,.99)) !important;
+  box-shadow: 0 24px 70px rgba(0,0,0,.62) !important;
+}
+
+.reward-form input,
+.reward-form textarea,
+.reward-form select,
+.quest-form input,
+.quest-form select {
+  border-color: rgba(211,172,92,.14) !important;
+  background: rgba(5,6,8,.7) !important;
+}
+
+.reward-form input:focus,
+.reward-form textarea:focus,
+.reward-form select:focus,
+.quest-form input:focus,
+.quest-form select:focus {
+  border-color: rgba(211,172,92,.52) !important;
+  box-shadow: 0 0 0 3px rgba(211,172,92,.07) !important;
+}
+
+.sold-out-stamp {
+  color: #bd5046;
+}
+
+@media (max-width: 650px) {
+  .main-navigation {
+    top: 6px;
+    width: calc(100% - 20px);
+    margin-top: 7px;
+    padding: 4px;
+  }
+
+  .store-page,
+  .inventory-page,
+  .stats-page {
+    padding-top: 12px !important;
+  }
+
+  .store-hero,
+  .inventory-hero,
+  .stats-hero {
+    margin-bottom: 18px;
+    padding: 16px !important;
+  }
+
+  .store-hero p,
+  .inventory-hero p,
+  .stats-hero p {
+    margin-bottom: 0;
+    font-size: .82rem;
+  }
+
+  .store-wallet,
+  .inventory-count {
+    padding: 10px 14px;
+  }
+
+  .store-wallet strong,
+  .inventory-count strong {
+    font-size: 1.4rem;
+  }
+
+  .store-section-header {
+    flex-direction: row;
+    align-items: center;
+  }
+
+  .store-section-header p {
+    display: none;
+  }
+
+  .store-section-header button {
+    width: auto;
+    padding: 9px 12px;
+  }
+
+  .reward-grid,
+  .inventory-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 9px;
+  }
+
+  .reward-card,
+  .inventory-card {
+    min-height: 0;
+    padding: 13px;
+  }
+
+  .reward-card-actions,
+  .inventory-card-actions {
+    flex-direction: column;
+  }
+}
+
+@media (max-width: 390px) {
+  .reward-grid,
+  .inventory-grid {
+    grid-template-columns: 1fr;
+  }
+}
