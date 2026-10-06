@@ -130,6 +130,11 @@ function App() {
   ] = useState(null);
 
   const [
+    questFormOpen,
+    setQuestFormOpen
+  ] = useState(false);
+
+  const [
     characterSheetOpen,
     setCharacterSheetOpen
   ] = useState(false);
@@ -632,6 +637,9 @@ function App() {
         ]
       })
     );
+
+    setQuestFormOpen(false);
+    showToast("⚔️ Nieuwe quest toegevoegd!");
   }
 function addReward(
   newReward
@@ -771,6 +779,8 @@ function consumeReward(
       quest
     );
 
+    setQuestFormOpen(true);
+
     window.scrollTo({
       top: 0,
       behavior: "smooth"
@@ -800,12 +810,16 @@ function consumeReward(
     setEditingQuest(
       null
     );
+
+    setQuestFormOpen(false);
   }
 
   function cancelEdit() {
     setEditingQuest(
       null
     );
+
+    setQuestFormOpen(false);
   }
 
   function deleteQuest(
@@ -1046,32 +1060,52 @@ function consumeReward(
         />
 
         <section className="section">
-          <div className="section-heading">
-            <h2>
-              ⚔️ Quests
-            </h2>
+          <div className="section-heading quest-section-heading">
+            <div>
+              <h2>
+                ⚔️ Quests
+              </h2>
 
-            <span>
-              {completedQuestIds.length}/
-              {quests.length}{" "}
-              available period completed
-            </span>
+              <span>
+                {completedQuestIds.length}/
+                {quests.length}{" "}
+                available period completed
+              </span>
+            </div>
+
+            <button
+              type="button"
+              className="quest-add-button"
+              onClick={() => {
+                setEditingQuest(null);
+                setQuestFormOpen(true);
+              }}
+              aria-label="Nieuwe quest"
+              title="Nieuwe quest"
+            >
+              +
+            </button>
           </div>
 
-          <QuestForm
-            onAddQuest={
-              addQuest
-            }
-            editingQuest={
-              editingQuest
-            }
-            onSaveEdit={
-              saveEditedQuest
-            }
-            onCancelEdit={
-              cancelEdit
-            }
-          />
+          {questFormOpen && (
+            <div
+              className="quest-form-backdrop"
+              onMouseDown={(event) => {
+                if (event.target === event.currentTarget) {
+                  cancelEdit();
+                }
+              }}
+            >
+              <div className="quest-form-modal">
+                <QuestForm
+                  onAddQuest={addQuest}
+                  editingQuest={editingQuest}
+                  onSaveEdit={saveEditedQuest}
+                  onCancelEdit={cancelEdit}
+                />
+              </div>
+            </div>
+          )}
 
           <QuestList
             quests={
