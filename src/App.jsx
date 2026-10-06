@@ -117,6 +117,14 @@ function App() {
   ] = useState("quests")
   
   const [
+    toast,
+    setToast
+  ] = useState(null);
+
+  const toastTimer =
+    useRef(null);
+
+  const [
     editingQuest,
     setEditingQuest
   ] = useState(null);
@@ -382,6 +390,26 @@ function App() {
     pendingCloudData
   ]);
 
+  function showToast(
+    message,
+    type = "success"
+  ) {
+    if (toastTimer.current) {
+      clearTimeout(toastTimer.current);
+    }
+
+    setToast({
+      id: Date.now(),
+      message,
+      type
+    });
+
+    toastTimer.current =
+      setTimeout(() => {
+        setToast(null);
+      }, 3200);
+  }
+
   async function useCloudSave() {
     if (
       !pendingCloudData
@@ -585,6 +613,10 @@ function App() {
         };
       }
     );
+
+    showToast(
+      `⚔️ Quest complete! +${quest.xp} XP · +${quest.y} Y`
+    );
   }
 
   function addQuest(
@@ -618,27 +650,38 @@ function addReward(
 function buyReward(
   rewardId
 ) {
-  let purchaseResult = null;
+  const reward =
+    appData.rewards.find(
+      (item) => item.id === rewardId
+    );
 
-  setAppData(
-    (currentData) => {
-      purchaseResult =
-        purchaseReward(
-          currentData,
-          rewardId
-        );
+  const result =
+    purchaseReward(
+      appData,
+      rewardId
+    );
 
-      if (
-        !purchaseResult.success
-      ) {
-        return currentData;
-      }
-
-      return purchaseResult.data;
+  if (!result.success) {
+    if (result.reason === "not-enough-y") {
+      showToast(
+        `⚔️ Nog niet genoeg Y-bucks! Je komt nog ${result.missingY} Y tekort.`,
+        "warning"
+      );
+    } else {
+      showToast(
+        "Deze reward is nu niet beschikbaar.",
+        "warning"
+      );
     }
-  );
 
-  return purchaseResult;
+    return;
+  }
+
+  setAppData(result.data);
+
+  showToast(
+    `🛒 ${reward?.name || "Reward"} gekocht voor ${result.purchase.totalPrice} Y!`
+  );
 }
 function consumeReward(
   acquisitionId
@@ -673,39 +716,51 @@ function consumeReward(
     itemId,
     quantity = 1
   ) {
+    const result =
+      sellInventoryStack(
+        appData.inventory,
+        itemId,
+        quantity,
+        1
+      );
+
+    if (!result.success) {
+      showToast(
+        "Deze reward kan niet verkocht worden.",
+        "warning"
+      );
+      return;
+    }
+
     setAppData(
-      (currentData) => {
-        const result =
-          sellInventoryStack(
-            currentData.inventory,
-            itemId,
-            quantity,
-            1
-          );
+      (currentData) => ({
+        ...currentData,
 
-        if (!result.success) {
-          return currentData;
-        }
+        profile: {
+          ...currentData.profile,
+          yBucks:
+            currentData.profile.yBucks +
+            result.refund
+        },
 
-        return {
-          ...currentData,
+        inventory:
+          result.inventory,
 
-          profile: {
-            ...currentData.profile,
-            yBucks:
-              currentData.profile.yBucks +
-              result.refund
-          },
+        sales: [
+          ...currentData.sales,
+          ...result.sales
+        ]
+      })
+    );
 
-          inventory:
-            result.inventory,
+    const item =
+      appData.inventory.find(
+        (entry) =>
+          entry.itemId === itemId
+      );
 
-          sales: [
-            ...currentData.sales,
-            ...result.sales
-          ]
-        };
-      }
+    showToast(
+      `🪙 ${quantity}× ${item?.itemName || "reward"} verkocht voor ${result.refund} Y!`
     );
   }
 
@@ -920,63 +975,60 @@ function consumeReward(
           />
         </div>
       </header>
-                  <nav className="main-navigation">
+                  <nav
+        className="main-navigation"
+        aria-label="Main navigation"
+      >
         <button
           type="button"
-          className={
-            activePage === "quests"
-              ? "active"
-              : ""
-          }
-          onClick={() =>
-            setActivePage("quests")
-          }
+          className={activePage === "quests" ? "active" : ""}
+          onClick={() => setActivePage("quests")}
+          aria-label="Quests"
+          title="Quests"
         >
-          ⚔️ Quests
+          <span aria-hidden="true">⚔️</span>
         </button>
 
         <button
           type="button"
-          className={
-            activePage === "store"
-              ? "active"
-              : ""
-          }
-          onClick={() =>
-            setActivePage("store")
-          }
+          className={activePage === "store" ? "active" : ""}
+          onClick={() => setActivePage("store")}
+          aria-label="Store"
+          title="Store"
         >
-          🛒 Store
+          <span aria-hidden="true">🛒</span>
         </button>
 
         <button
           type="button"
-          className={
-            activePage === "inventory"
-              ? "active"
-              : ""
-          }
-          onClick={() =>
-            setActivePage("inventory")
-          }
+          className={activePage === "inventory" ? "active" : ""}
+          onClick={() => setActivePage("inventory")}
+          aria-label="Inventory"
+          title="Inventory"
         >
-          🎒 Inventory
+          <span aria-hidden="true">🎒</span>
         </button>
 
         <button
           type="button"
-          className={
-            activePage === "stats"
-              ? "active"
-              : ""
-          }
-          onClick={() =>
-            setActivePage("stats")
-          }
+          className={activePage === "stats" ? "active" : ""}
+          onClick={() => setActivePage("stats")}
+          aria-label="Stats"
+          title="Stats"
         >
-          📊 Stats
+          <span aria-hidden="true">📊</span>
         </button>
       </nav>
+
+      {toast && (
+        <div
+          className={`quest-toast ${toast.type}`}
+          role="status"
+          aria-live="polite"
+        >
+          {toast.message}
+        </div>
+      )}
 
       <main>
         {activePage === "quests" && (
