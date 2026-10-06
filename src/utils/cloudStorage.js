@@ -16,7 +16,10 @@ function normalizeCloudData(data = {}) {
 
     meta: {
       starterQuestsSeeded:
-        data.meta?.starterQuestsSeeded ?? true
+        data.meta?.starterQuestsSeeded ?? true,
+
+      starterRewardsSeeded:
+        data.meta?.starterRewardsSeeded ?? false
     },
 
     profile: {
