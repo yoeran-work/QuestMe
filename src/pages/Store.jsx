@@ -15,7 +15,9 @@ export default function Store({
   yBucks = 0,
   onAddReward,
   onBuyReward,
-  onArchiveReward
+  onArchiveReward,
+  onRestoreReward,
+  specials = []
 }) {
   const [
     rewardFormOpen,
@@ -181,20 +183,45 @@ export default function Store({
           </div>
         </div>
 
-        <div className="store-placeholder">
-          <span>✨</span>
+        {specials.length === 0 ? (
+          <div className="store-placeholder">
+            <span>✨</span>
 
-          <div>
-            <strong>
-              Specials komen hier
-            </strong>
+            <div>
+              <strong>
+                Geen actieve Specials
+              </strong>
 
-            <p>
-              Deze laag koppelen we later
-              aan loot, rarity en timers.
-            </p>
+              <p>
+                Tijdelijke Store Drops verschijnen
+                hier zodra QuestMe ze activeert.
+              </p>
+            </div>
           </div>
-        </div>
+        ) : (
+          <div className="reward-grid">
+            {specials.map((special) => (
+              <article
+                className="reward-card special"
+                key={special.id}
+              >
+                <div className="reward-icon">
+                  {special.icon || "✨"}
+                </div>
+
+                <div className="reward-card-content">
+                  <h3>{special.name}</h3>
+                  <p>{special.description}</p>
+
+                  <div className="reward-card-meta">
+                    <span>{special.price} Y</span>
+                    <span>{special.rarity || "Special"}</span>
+                  </div>
+                </div>
+              </article>
+            ))}
+          </div>
+        )}
       </section>
 
       <section className="store-section">
@@ -270,8 +297,21 @@ export default function Store({
                     </h3>
 
                     <p>
-                      {reward.status}
+                      Bewaard in je archive.
                     </p>
+                  </div>
+
+                  <div className="reward-card-actions">
+                    <button
+                      type="button"
+                      onClick={() =>
+                        onRestoreReward?.(
+                          reward.id
+                        )
+                      }
+                    >
+                      Restore
+                    </button>
                   </div>
                 </article>
               )
