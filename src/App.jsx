@@ -55,6 +55,9 @@ import {
 import starterQuests
   from "./data/starterQuests";
 
+import starterRewards
+  from "./data/starterRewards";
+
 import QuestList
   from "./components/QuestList";
 
@@ -102,19 +105,37 @@ function App() {
       const savedData =
         loadAppData();
 
-      if (
+      const needsStarterQuests =
         !savedData.meta
-          .starterQuestsSeeded
+          .starterQuestsSeeded;
+
+      const needsStarterRewards =
+        !savedData.meta
+          .starterRewardsSeeded;
+
+      if (
+        needsStarterQuests ||
+        needsStarterRewards
       ) {
         return {
           ...savedData,
 
           meta: {
             ...savedData.meta,
-            starterQuestsSeeded: true
+            starterQuestsSeeded: true,
+            starterRewardsSeeded: true
           },
 
-          quests: starterQuests
+          quests:
+            needsStarterQuests
+              ? starterQuests
+              : savedData.quests,
+
+          rewards:
+            needsStarterRewards &&
+            savedData.rewards.length === 0
+              ? starterRewards
+              : savedData.rewards
         };
       }
 
