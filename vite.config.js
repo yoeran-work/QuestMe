@@ -9,6 +9,12 @@ export default defineConfig({
     VitePWA({
       registerType: "autoUpdate",
 
+      workbox: {
+        cleanupOutdatedCaches: true,
+        clientsClaim: true,
+        skipWaiting: true
+      },
+
       manifest: {
         name: "QuestMe",
         short_name: "QuestMe",
