@@ -31,7 +31,7 @@ import {
 
 import {
   consumeInventoryItem,
-  sellInventoryItems
+  sellInventoryStack
 } from "./utils/inventoryActions";
 
 import {
@@ -666,45 +666,45 @@ function consumeReward(
   );
 }
   function sellReward(
-  acquisitionId,
-  quantity = 1
-) {
-  setAppData(
-    (currentData) => {
-      const result =
-        sellInventoryItems(
-          currentData.inventory,
-          acquisitionId,
-          quantity,
-          1
-        );
+    itemId,
+    quantity = 1
+  ) {
+    setAppData(
+      (currentData) => {
+        const result =
+          sellInventoryStack(
+            currentData.inventory,
+            itemId,
+            quantity,
+            1
+          );
 
-      if (!result.success) {
-        return currentData;
+        if (!result.success) {
+          return currentData;
+        }
+
+        return {
+          ...currentData,
+
+          profile: {
+            ...currentData.profile,
+            yBucks:
+              currentData.profile.yBucks +
+              result.refund
+          },
+
+          inventory:
+            result.inventory,
+
+          sales: [
+            ...currentData.sales,
+            ...result.sales
+          ]
+        };
       }
+    );
+  }
 
-      return {
-        ...currentData,
-
-        profile: {
-          ...currentData.profile,
-
-          yBucks:
-            currentData.profile.yBucks +
-            result.refund
-        },
-
-        inventory:
-          result.inventory,
-
-        sales: [
-          ...currentData.sales,
-          result.sale
-        ]
-      };
-    }
-  );
-}
   function editQuest(
     quest
   ) {
