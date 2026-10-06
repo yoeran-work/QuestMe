@@ -495,3 +495,41 @@
     border-radius: 22px 22px 16px 16px;
   }
 }
+
+
+/* RPG quest controls */
+.quest-type-badge {
+  border-color: rgba(211,172,92,.13);
+  background: rgba(0,0,0,.18);
+  color: var(--qm-muted);
+}
+
+.quest-card .quest-action-button {
+  border-color: rgba(211,172,92,.1);
+  background: rgba(0,0,0,.16);
+}
+
+.quest-add-button {
+  border-color: rgba(211,172,92,.48);
+  border-radius: 10px;
+  background: linear-gradient(180deg, #9b3d33, #672622);
+  box-shadow: 0 8px 24px rgba(0,0,0,.22);
+}
+
+.quest-form {
+  border-color: var(--qm-border);
+}
+
+@media (max-width: 600px) {
+  .quest-actions {
+    align-items: center;
+  }
+
+  .quest-card .quest-action-button {
+    flex: 0 0 34px;
+  }
+
+  .quest-card .complete-button {
+    min-height: 36px;
+  }
+}
