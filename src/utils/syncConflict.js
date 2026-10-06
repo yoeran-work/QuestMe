@@ -37,6 +37,11 @@ function getComparableSave(data) {
       starterQuestsSeeded:
         Boolean(
           data?.meta?.starterQuestsSeeded
+        ),
+
+      starterRewardsSeeded:
+        Boolean(
+          data?.meta?.starterRewardsSeeded
         )
     },
 
