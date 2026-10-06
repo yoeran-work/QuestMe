@@ -61,7 +61,10 @@ export default function Inventory({
           description: reward?.description || "",
           quantity: getInventoryQuantity(inventory, itemId),
           lots,
-          sellable
+          sellable,
+          rarity:
+            lots.find((lot) => lot.originalRarity)
+              ?.originalRarity || null
         };
       })
       .filter(Boolean);
@@ -146,7 +149,17 @@ export default function Inventory({
               </div>
 
               <div className="inventory-card-content">
-                <h2>{item.name}</h2>
+                <div className="inventory-title-row">
+                  <h2>{item.name}</h2>
+
+                  {item.rarity && (
+                    <span
+                      className={`rarity-badge rarity-${item.rarity}`}
+                    >
+                      {item.rarity}
+                    </span>
+                  )}
+                </div>
                 {item.description && <p>{item.description}</p>}
               </div>
 
