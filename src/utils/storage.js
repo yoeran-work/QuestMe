@@ -6,7 +6,8 @@ export function createInitialData() {
     version: STORAGE_VERSION,
 
     meta: {
-      starterQuestsSeeded: false
+      starterQuestsSeeded: false,
+      starterRewardsSeeded: false
     },
 
     profile: {
