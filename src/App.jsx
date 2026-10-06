@@ -31,7 +31,7 @@ import {
 
 import {
   consumeInventoryItem,
-  sellInventoryItems
+  sellInventoryStack
 } from "./utils/inventoryActions";
 
 import {
@@ -78,9 +78,13 @@ import Store
 import Inventory
  from "./pages/Inventory";
 
+import Stats
+  from "./pages/Stats";
+
 import "./quest-management.css";
 import "./store.css";
 import "./inventory.css";
+import "./stats.css";
 
 function App() {
   const [appData, setAppData] =
@@ -666,45 +670,45 @@ function consumeReward(
   );
 }
   function sellReward(
-  acquisitionId,
-  quantity = 1
-) {
-  setAppData(
-    (currentData) => {
-      const result =
-        sellInventoryItems(
-          currentData.inventory,
-          acquisitionId,
-          quantity,
-          1
-        );
+    itemId,
+    quantity = 1
+  ) {
+    setAppData(
+      (currentData) => {
+        const result =
+          sellInventoryStack(
+            currentData.inventory,
+            itemId,
+            quantity,
+            1
+          );
 
-      if (!result.success) {
-        return currentData;
+        if (!result.success) {
+          return currentData;
+        }
+
+        return {
+          ...currentData,
+
+          profile: {
+            ...currentData.profile,
+            yBucks:
+              currentData.profile.yBucks +
+              result.refund
+          },
+
+          inventory:
+            result.inventory,
+
+          sales: [
+            ...currentData.sales,
+            ...result.sales
+          ]
+        };
       }
+    );
+  }
 
-      return {
-        ...currentData,
-
-        profile: {
-          ...currentData.profile,
-
-          yBucks:
-            currentData.profile.yBucks +
-            result.refund
-        },
-
-        inventory:
-          result.inventory,
-
-        sales: [
-          ...currentData.sales,
-          result.sale
-        ]
-      };
-    }
-  );
-}
   function editQuest(
     quest
   ) {
@@ -1052,7 +1056,11 @@ function consumeReward(
             onConsume={consumeReward}
             onSell={sellReward}
           />
-)}
+        )}
+
+        {activePage === "stats" && (
+          <Stats appData={appData} />
+        )}
       </main>
     </div>
   );
