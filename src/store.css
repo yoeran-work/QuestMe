@@ -231,28 +231,32 @@
   }
 }
 .main-navigation {
-  display: flex;
-  gap: 10px;
-  width: min(1100px, calc(100% - 32px));
-  margin: 18px auto 0;
-  padding: 8px;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+  width: min(460px, calc(100% - 24px));
+  margin: 14px auto 0;
+  padding: 6px;
   border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 18px;
+  border-radius: 16px;
   background: rgba(255, 255, 255, 0.04);
   backdrop-filter: blur(10px);
 }
 
 .main-navigation button {
-  flex: 1;
+  display: grid;
+  place-items: center;
+  min-width: 0;
+  min-height: 44px;
   border: 0;
-  border-radius: 12px;
-  padding: 12px 14px;
+  border-radius: 11px;
+  padding: 8px;
   font: inherit;
-  font-weight: 700;
+  font-size: 1.25rem;
   cursor: pointer;
   background: transparent;
   color: inherit;
-  opacity: 0.68;
+  opacity: 0.62;
   transition:
     transform 0.15s ease,
     background 0.15s ease,
@@ -270,17 +274,59 @@
   opacity: 1;
 }
 
+.quest-toast {
+  position: fixed;
+  left: 50%;
+  bottom: max(22px, env(safe-area-inset-bottom));
+  z-index: 1500;
+  width: max-content;
+  max-width: min(440px, calc(100% - 28px));
+  transform: translateX(-50%);
+  box-sizing: border-box;
+  padding: 13px 18px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 14px;
+  background: rgba(20, 20, 26, 0.96);
+  box-shadow: 0 14px 44px rgba(0, 0, 0, 0.48);
+  backdrop-filter: blur(12px);
+  font-size: 0.92rem;
+  font-weight: 800;
+  text-align: center;
+  animation: quest-toast-in 0.2s ease-out;
+}
+
+.quest-toast.warning {
+  border-color: rgba(255, 196, 87, 0.4);
+}
+
+@keyframes quest-toast-in {
+  from {
+    opacity: 0;
+    transform: translate(-50%, 12px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+}
+
 @media (max-width: 650px) {
   .main-navigation {
-    width: min(100% - 20px, 1100px);
-    overflow-x: auto;
+    position: sticky;
+    top: 8px;
+    z-index: 900;
+    width: calc(100% - 20px);
+    margin-top: 10px;
   }
 
   .main-navigation button {
-    min-width: 120px;
-    flex: 0 0 auto;
+    min-height: 42px;
+    padding: 6px;
+    font-size: 1.2rem;
   }
 }
+
 .reward-form-backdrop {
   position: fixed;
   inset: 0;
