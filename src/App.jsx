@@ -78,9 +78,13 @@ import Store
 import Inventory
  from "./pages/Inventory";
 
+import Stats
+  from "./pages/Stats";
+
 import "./quest-management.css";
 import "./store.css";
 import "./inventory.css";
+import "./stats.css";
 
 function App() {
   const [appData, setAppData] =
@@ -1052,7 +1056,11 @@ function consumeReward(
             onConsume={consumeReward}
             onSell={sellReward}
           />
-)}
+        )}
+
+        {activePage === "stats" && (
+          <Stats appData={appData} />
+        )}
       </main>
     </div>
   );
