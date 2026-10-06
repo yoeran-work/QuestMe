@@ -35,8 +35,18 @@ import {
 } from "./utils/inventoryActions";
 
 import {
-  purchaseReward 
+  purchaseReward
 } from "./utils/purchaseReward";
+
+import {
+  archiveReward,
+  restoreReward
+} from "./utils/rewardInventory";
+
+import {
+  getRarityLabel,
+  tryQuestLootDrop
+} from "./utils/lootEngine";
 
 import {
   useAuth
@@ -535,19 +545,18 @@ function App() {
     const completedAt =
       new Date();
 
+    let feedback = null;
+
     setAppData(
       (currentData) => {
         const alreadyCompleted =
           isQuestCompleted(
             quest,
-            currentData
-              .questCompletions,
+            currentData.questCompletions,
             completedAt
           );
 
-        if (
-          alreadyCompleted
-        ) {
+        if (alreadyCompleted) {
           return currentData;
         }
 
@@ -557,71 +566,87 @@ function App() {
           );
 
         const completion = {
-          id:
-            crypto.randomUUID(),
-
-          questId:
-            quest.id,
-
-          questTitle:
-            quest.title,
-
+          id: crypto.randomUUID(),
+          questId: quest.id,
+          questTitle: quest.title,
           questType,
-
           completedAt:
-            completedAt
-              .toISOString(),
-
+            completedAt.toISOString(),
           completedDate:
             `${completedAt.getFullYear()}-${String(
               completedAt.getMonth() + 1
             ).padStart(2, "0")}-${String(
               completedAt.getDate()
             ).padStart(2, "0")}`,
-
           periodKey:
             getCompletionPeriodKey(
               questType,
               completedAt
             ),
-
-          xpEarned:
-            quest.xp,
-
-          yEarned:
-            quest.y
+          xpEarned: quest.xp,
+          yEarned: quest.y
         };
+
+        const loot =
+          tryQuestLootDrop({
+            quest,
+            rewards:
+              currentData.rewards,
+            lootState:
+              currentData.lootState
+          });
+
+        feedback =
+          loot.dropped
+            ? `✨ ${getRarityLabel(loot.rarity)} DROP! ${loot.reward.icon || "🎁"} ${loot.reward.name}`
+            : `⚔️ Quest complete! +${quest.xp} XP · +${quest.y} Y`;
 
         return {
           ...currentData,
 
           profile: {
             ...currentData.profile,
-
             totalXp:
-              currentData.profile
-                .totalXp +
+              currentData.profile.totalXp +
               quest.xp,
-
             yBucks:
-              currentData.profile
-                .yBucks +
+              currentData.profile.yBucks +
               quest.y
           },
 
           questCompletions: [
-            ...currentData
-              .questCompletions,
-
+            ...currentData.questCompletions,
             completion
-          ]
+          ],
+
+          inventory:
+            loot.dropped
+              ? [
+                  ...currentData.inventory,
+                  loot.acquisition
+                ]
+              : currentData.inventory,
+
+          lootEvents:
+            loot.dropped
+              ? [
+                  ...currentData.lootEvents,
+                  loot.lootEvent
+                ]
+              : currentData.lootEvents,
+
+          lootState:
+            loot.lootState
         };
       }
     );
 
-    showToast(
-      `⚔️ Quest complete! +${quest.xp} XP · +${quest.y} Y`
-    );
+    window.setTimeout(() => {
+      showToast(
+        feedback ||
+          `⚔️ Quest complete! +${quest.xp} XP · +${quest.y} Y`
+      );
+    }, 0);
   }
 
   function addQuest(
@@ -641,6 +666,38 @@ function App() {
     setQuestFormOpen(false);
     showToast("⚔️ Nieuwe quest toegevoegd!");
   }
+function archiveStoreReward(
+  rewardId
+) {
+  setAppData((currentData) => ({
+    ...currentData,
+    rewards: currentData.rewards.map(
+      (reward) =>
+        reward.id === rewardId
+          ? archiveReward(reward)
+          : reward
+    )
+  }));
+
+  showToast("📚 Reward gearchiveerd.");
+}
+
+function restoreStoreReward(
+  rewardId
+) {
+  setAppData((currentData) => ({
+    ...currentData,
+    rewards: currentData.rewards.map(
+      (reward) =>
+        reward.id === rewardId
+          ? restoreReward(reward)
+          : reward
+    )
+  }));
+
+  showToast("✨ Reward teruggezet in de Store.");
+}
+
 function addReward(
   newReward
 ) {
@@ -1133,6 +1190,9 @@ function consumeReward(
             yBucks={yBucks}
             onAddReward={addReward}
             onBuyReward={buyReward}
+            onArchiveReward={archiveStoreReward}
+            onRestoreReward={restoreStoreReward}
+            specials={appData.specials}
         />
         )}
         {activePage === "inventory" && (
